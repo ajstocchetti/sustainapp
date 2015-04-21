@@ -1,0 +1,23 @@
+body
+{	background-color: #FAC810;
+
+}
+
+p
+{	text-align:justify;
+}
+
+div.topbanner
+{	background-color:#8BC540;
+	width:100%;
+	padding-top:25px;
+	margin-bottom:25px;
+}
+
+/*	***** COLORS *****
+	Blue: #1E92D0
+	Red: #E42225
+	Yellow: #FAC810
+	Pink: #ED0D85
+	Green: #8BC540
+*/
