@@ -32,37 +32,36 @@
 
   <!-- Primary Page Layout
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <div class="topbanner row">
-      <div class="container">
-		<div class="one-third column">
-			<img src="images/logo.png">
-		</div>
-		<div class="two-thirds column" style="margin-top:25px;">
-			<h1>SustainApp</h1>
-			<h3>A Smarter Way to Shop</h3>
-			<p>SustainApp provides instant Social Responsibility ratings for consumers.
-			<br />All you have to do is scan the barcode.</p>  
-		</div>
-	  </div>
-    </div>
+	<?php include '/modules/topbanner.html.php'; ?>
 
   <div class="container">
 	<div class="row">
-		<div class="one-third column">
+	</div>
+	
+	<div class="row">
+		<div class="one-third column searchcol">
+			<center>
 			<!-- image search -->
-			<input type="file" accept="image/*" capture="camera">
-			<button type="submit">Scan Barcode</button>
+			<!-- need to override max-width of elemnts to inheret from div (check out twelve column css -->
+			<input type="file" accept="image/*" capture="camera" class="bcimg srslyfit">
+			<br>
+			<button type="submit" class="srslyfit">Scan Barcode</button>
+			</center>
 		</div>
-		<div class="one-third column">
-			<input type="number">
-			<button type="submit">Search Barcode</button>
+		<div class="one-third column searchcol"><center>
 			<!-- barcode text box -->
+			<input type="number" class="srslyfit">
+			<br>
+			<button type="submit" class="srslyfit">Search Barcode</button>
+			</center>
 		</div>
-		<div class="one-third column">
+		<div class="one-third column searchcol">
+			<center>
 			<!-- company text box -->
-			<input type="search" >
-			<button type="submit">Search Company</button>
-			
+			<input type="search" class="srslyfit">
+			<br>
+			<button type="submit" class="srslyfit">Search Company</button>
+			</center>
 		</div>
 	</div>
   </div>

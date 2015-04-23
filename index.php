@@ -32,20 +32,8 @@
 
   <!-- Primary Page Layout
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <div class="topbanner row">
-      <div class="container">
-		<div class="one-third column">
-			<img src="images/logo.png">
-		</div>
-		<div class="two-thirds column" style="margin-top:25px;">
-			<h1>SustainApp</h1>
-			<h3>A Smarter Way to Shop</h3>
-			<p>SustainApp provides instant Social Responsibility ratings for consumers.
-			<br />All you have to do is scan the barcode.</p>  
-		</div>
-	  </div>
-    </div>
-
+  <?php include '/modules/topbanner.html.php'; ?>  
+	
   <div class="container">
 	<div class="row">
 	<div class="twelve columns">
@@ -86,15 +74,15 @@
 				<div class="mc-field-group one-third column">
 					<label for="mce-EMAIL">Email Address  <span class="asterisk">*</span>
 				</label>
-					<input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
+					<input type="email" value="" name="EMAIL" class="required email srslyfit" id="mce-EMAIL">
 				</div>
 				<div class="mc-field-group one-third column">
 					<label for="mce-FNAME">First Name </label>
-					<input type="text" value="" name="FNAME" class="" id="mce-FNAME">
+					<input type="text" value="" name="FNAME" class="srslyfit" id="mce-FNAME">
 				</div>
 				<div class="mc-field-group one-third column">
 					<label for="mce-LNAME">Last Name </label>
-					<input type="text" value="" name="LNAME" class="" id="mce-LNAME">
+					<input type="text" value="" name="LNAME" class="srslyfit" id="mce-LNAME">
 				</div>
 					<div id="mce-responses" class="clear">
 						<div class="response" id="mce-error-response" style="display:none"></div>
