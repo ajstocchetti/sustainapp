@@ -1,7 +1,69 @@
 <?php
 REQUIRE_ONCE($_SERVER['DOCUMENT_ROOT']."/../jm2_sustainapp_db.php");
 
-processParams();
+
+/*  ***** getParams *****
+	description: reads HTML variables and begins score lookup
+	params: none
+	return: nothing (JSON string is be echoed)
+	*************** */
+function getParams()
+{	// get parameters
+	$upcCode = NULL;
+	if( isset($_REQUEST['upcc']))
+	{	$upcCode=htmlspecialchars($_REQUEST["upcc"]);	}
+	
+	$searchMethod = "";
+	if( isset($_REQUEST['searchtype']))
+	{	$searchMethod=strtoupper($_REQUEST['searchtype']);	}
+	
+	processParams($upcCode, $searchMethod);
+}
+
+
+
+/*  ***** getParamsPHP *****
+	description: begins score lookup from PHP variables
+	params: upc - upc code to search for
+			type [opt] - if upc is a upc or company name
+	return: php array with search results
+	*************** */
+function getParamsPHP($upc, $type)
+{	return processParams($upc, $type, "PHP");
+}
+
+
+
+/*  ***** processParams *****
+	description: analyse input and begin UPC or company query
+	params: upcCode - UPC or company to search for
+			type [opt] - if search string is a UPC or company name
+			dataType [opt] - format to return. See doResponse for details
+	return: JSON echoed or PHP array
+	*************** */
+function processParams($upcCode, $searchMethod, $dataType=NULL)
+{	if( empty($upcCode))	// quit now if no UPC or company to lookup
+	{	return noData($dataType);	}
+	if($searchMethod == "UPC")
+	{	getProductDigitEyes($upcCode);	}
+	elseif($searchMethod == "COMPANY")
+	{	return getScoreForCompany($upcCode);	}
+	else // search type not set or junk value
+	{	return isCompOrUPC($upcCode, $dataType);	}
+}
+
+
+
+/*  ***** noData *****
+	description: reads HTML variables and begins score lookup
+	params: dataType [opt] - format to return. See doResponse for details
+	return: JSON echoed or PHP array
+	*************** */
+function noData($dataType=NULL)
+{	// TODO: make a real HTTP response when do the same for $retData
+	doResponse(0, "No data given. Please try again",NULL,NULL,NULL,NULL,NULL,$dataType);
+}
+
 
 
 /*  ***** doResponse ***** 
@@ -14,9 +76,12 @@ processParams();
 			upc [opt] - UPC code of product that was looked up
 			desc [opt] - description of product that was looked up
 			alias [opt] - another name of the company
-	return: nothing, echo to screen
+			dataType [opt] - format to return data in
+							null -> JSON
+							PHP -> php array
+	return: PHP array or echo JSON
 	*************** */
-function doResponse($progress, $message, $score=NULL, $company=NULL, $upc=NULL, $desc=NULL, $alias=NULL)
+function doResponse($progress, $message, $score=NULL, $company=NULL, $upc=NULL, $desc=NULL, $alias=NULL, $dataType=NULL)
 {	// consideration: return status code
 	// consideration: log error for certain failures
 	// consideration: create optional param to prevent sending http response
@@ -45,9 +110,10 @@ function doResponse($progress, $message, $score=NULL, $company=NULL, $upc=NULL, 
 		"UPC" => upc passed in [opt]
 		"DESCRIPTION" => description of product [opt]
 	*/
-	$array;// = array();
+	$array;
 	if($progress == 1000)	// success
 	{	$message = "Success!";	}
+	// TODO: add messages for all progress codes
 	$array["PROGRESS"] = $progress;
 	$array["MSG"] = $message;
 	if( !empty($score))
@@ -60,13 +126,9 @@ function doResponse($progress, $message, $score=NULL, $company=NULL, $upc=NULL, 
 		$array["DESCRIPTION"] = $desc;
 	if( !empty($alias))
 		$array["COMPALIAS"] = $alias;
-	
-	// TODO: should php/json return type be moved to processParams()?
-	$retType = NULL;
-	if( isset($_REQUEST['returntype']))
-	{	$retType = $_REQUEST['returntype'];	}
-	if( $retType = "PHP")
-		return $array;
+
+	if( $dataType = "PHP")
+	{	return $array;	}
 	else
 	{	$jsonResp = json_encode($array);
 		// TODO: check for encode error and make a note of it
@@ -86,57 +148,31 @@ function doResponse($progress, $message, $score=NULL, $company=NULL, $upc=NULL, 
 
 
 
-
-
-/*  ***** processParams *****
-	description: reads user input parameters and begins score lookup
-	params: none
-	return: nothing, all paths call into doResponse
-	*************** */
-function processParams()
-{	// get parameters
-	$upcCode = NULL;
-	if( isset($_REQUEST['upcc']))
-	{	$upcCode=htmlspecialchars($_REQUEST["upcc"]);	}
-	if( empty($upcCode))
-	{	// quit now if no UPC or company to lookup
-		// no need to worry if all 0's passed in - this is a private code, not an actual UPC
-		// TODO: make a real HTTP response when do the same for $retData
-		doResponse(0, "No data given. Please try again");
-		return;
-	}
-	$searchMethod = "";
-	if( isset($_REQUEST['searchtype']))
-	{	$searchMethod=strtoupper($_REQUEST['searchtype']);	}
-	if($searchMethod == "UPC")
-	{	getProductDigitEyes($upcCode);	}
-	elseif($searchMethod == "COMPANY")
-	{	getScoreForCompany($upcCode);	}
-	else // search type not set or junk value
-	{	isCompOrUPC($upcCode);	}
-}
-
-function isCompOrUPC($input)
-{	// TODO: test this in detail, mainly the $temp part
+/*  ***** isCompOrUPC *****
+	description: determine if input is UPC or company name
+	params: upcCode - UPC to look up
+			dataType [opt] - format to return. See doResponse for details
+	return: JSON echoed or PHP array
+*/
+function isCompOrUPC($input, $dataType)
+{	// TODO: test this in detail, mainly the regex part
 	$temp = preg_replace("/[^0-9]/", "", $input);
 	$inputLen = strlen($temp);
 	if(($inputLen>4) && ($inputLen<21))
-	{	getProductDigitEyes($temp);	}
+	{	return getProductDigitEyes($temp,$dataType);	}
 	else
-	{	getScoreForCompany($input);	}
+	{	return getScoreForCompany($input);	}
 }
-
-
 
 
 
 /*  ***** getProductDigitEyes *****
 	description: queries DigitEyes API for UPC
 	params: upcCode - UPC to look up
-	return: nothing, calls doResponse on failure,
-			getScoreForCompany on success
+			dataType [opt] - format to return. See doResponse for details
+	return: JSON echoed or PHP array
 */
-function getProductDigitEyes($upcCode)
+function getProductDigitEyes($upcCode,$dataType)
 {	// TODO: make sure UPC code is only numbers
 	// if searchtype=UPC we haven't done any validation on the upc code
 	// ********** Step 1: Generate URL for digit-eyes HTTP call **********
@@ -163,8 +199,7 @@ function getProductDigitEyes($upcCode)
 		now onto cURL
 	*/
 	if( !function_exists('curl_version'))	// make sure cURL is enabled before trying to make call
-	{	doResponse(115,"Curl not enabled");
-		return;
+	{	return doResponse(115,"Curl not enabled",NULL,NULL,NULL,NULL,NULL,$dataType);
 	}
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $fullUrl);
@@ -174,8 +209,7 @@ function getProductDigitEyes($upcCode)
 	$httpGetRespCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 	curl_close($ch);
 	if( $httpGetRespCode != 200) // TODO: make this a real error message
-	{	doResponse(100,"Response code: " . $httpGetRespCode);
-		return;
+	{	return doResponse(100,"Response code: " . $httpGetRespCode,NULL,NULL,NULL,NULL,NULL,$dataType);
 	}
 	
 	// ********** Step 3: Parse JSON **********
@@ -195,8 +229,7 @@ function getProductDigitEyes($upcCode)
 		$description = $JSONObject["description"];
 	if( empty($gcpCompany) && empty($mfctCompany) && empty($brand) && empty($description))	// no usefull data returned
 	{	// TODO: make call to query knowProducts table before giving up...maybe do this beofre digiteyes?
-		doResponse(105,"No product info returned");
-		return;
+		return doResponse(105,"No product info returned",NULL,NULL,NULL,NULL,NULL,$dataType);
 		// TODO: parse through JSON to get error message
 		// or maybe its not worth it...
 	}
@@ -205,10 +238,8 @@ function getProductDigitEyes($upcCode)
 	$upcReturned = $upcCode;
 	if( isset($JSONObject["upc_code"]))
 		$upcReturned = $JSONObject["upc_code"];
-	getScoreForData($gcpCompany, $mfctCompany, $brand, $description, $upcReturned);
+	return getScoreForData($gcpCompany, $mfctCompany, $brand, $description, $upcReturned, $dataType);
 }
-
-
 
 
 
@@ -219,9 +250,10 @@ function getProductDigitEyes($upcCode)
 			brand [opt] - name of brand of product
 			description [opt] - description of product that company makes
 			upc [opt] - UPC code that was queried
-	return: nothing, calls doResponse
+			dataType [opt] - format to return. See doResponse for details
+	return: JSON echoed or PHP array
 	*************** */
-function getScoreForData($company, $companyOther="", $brand="", $description="", $upc="")
+function getScoreForData($company, $companyOther="", $brand="", $description="", $upc="", $dataType=NULL)
 {	$ourScore = FALSE;
 	// if a company's name is 0 (the digit zero) then this will always fail. cest la vie
 	if( !$ourScore && !empty($company))
@@ -236,10 +268,8 @@ function getScoreForData($company, $companyOther="", $brand="", $description="",
 	if($ourScore)
 		$replyCode = 1000;	// success
 	// TODO: do something about return messages?
-	doResponse($replyCode,"",$ourScore,$company,$upc,$description,$companyOther);
+	return doResponse($replyCode,"",$ourScore,$company,$upc,$description,$companyOther,$dataType);
 }
-
-
 
 
 
@@ -280,8 +310,6 @@ function getScoreForCompany($company)
 
 
 
-
-
 /*  ***** getScoreForUPC *****
 	description: looks up company from knownProducts then score for company
 					this searches JM2 database
@@ -310,8 +338,6 @@ function getScoreForUPC($upc)
 
 
 
-
-
 /*  ***** getDBCon *****
 	description: creates a PDO connection, view only
 	params: none
@@ -325,8 +351,8 @@ function getDBCon()	{
 		return $db;
 	}
 	catch(PDOException $e) {
-		return "";
 		// TODO: log error somewhere
+		return "";
 	}
 }
 ?>

@@ -36,6 +36,7 @@
 
   <div class="container">
 	<div class="row">
+	<?php include 'displayResults.php'; ?>
 	</div>
 	
 	<div class="row">
