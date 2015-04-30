@@ -63,7 +63,7 @@ function doResponse($progress, $message, $score=NULL, $company=NULL, $upc=NULL, 
 	
 	// TODO: should php/json return type be moved to processParams()?
 	$retType = NULL;
-	if( isset($_REQUEST['returntype'])
+	if( isset($_REQUEST['returntype']))
 	{	$retType = $_REQUEST['returntype'];	}
 	if( $retType = "PHP")
 		return $array;
