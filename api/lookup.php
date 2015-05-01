@@ -1,7 +1,6 @@
 <?php
 REQUIRE_ONCE($_SERVER['DOCUMENT_ROOT']."/../jm2_sustainapp_db.php");
 
-
 /*  ***** getParams *****
 	description: reads HTML variables and begins score lookup
 	params: none
@@ -17,7 +16,7 @@ function getParams()
 	if( isset($_REQUEST['searchtype']))
 	{	$searchMethod=strtoupper($_REQUEST['searchtype']);	}
 	
-	processParams($upcCode, $searchMethod);
+	return processParams($upcCode, $searchMethod);
 }
 
 
@@ -45,9 +44,9 @@ function processParams($upcCode, $searchMethod, $dataType=NULL)
 {	if( empty($upcCode))	// quit now if no UPC or company to lookup
 	{	return noData($dataType);	}
 	if($searchMethod == "UPC")
-	{	getProductDigitEyes($upcCode);	}
+	{	getProductDigitEyes($upcCode,$dataType);	}
 	elseif($searchMethod == "COMPANY")
-	{	return getScoreForCompany($upcCode);	}
+	{	return getScoreForCompany($upcCode,$dataType);	}
 	else // search type not set or junk value
 	{	return isCompOrUPC($upcCode, $dataType);	}
 }
@@ -126,8 +125,8 @@ function doResponse($progress, $message, $score=NULL, $company=NULL, $upc=NULL, 
 		$array["DESCRIPTION"] = $desc;
 	if( !empty($alias))
 		$array["COMPALIAS"] = $alias;
-
-	if( $dataType = "PHP")
+		
+	if( $dataType == "PHP")
 	{	return $array;	}
 	else
 	{	$jsonResp = json_encode($array);
@@ -136,7 +135,8 @@ function doResponse($progress, $message, $score=NULL, $company=NULL, $upc=NULL, 
 		// ********** HTTP RESPONSE **********
 		// TODO: make a real HHTP response
 		// for now, just echo JSON
-			echo $jsonResp;
+		 echo $jsonResp;
+		//return "ANDY";//$jsonResp;
 		/* need pecl_http library...
 		HttpResponse::status(200);
 		HttpResponse::setContentType('application/json');
@@ -161,7 +161,7 @@ function isCompOrUPC($input, $dataType)
 	if(($inputLen>4) && ($inputLen<21))
 	{	return getProductDigitEyes($temp,$dataType);	}
 	else
-	{	return getScoreForCompany($input);	}
+	{	return getScoreForCompany($input,$dataType);	}
 }
 
 

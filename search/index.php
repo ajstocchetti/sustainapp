@@ -22,6 +22,11 @@
   <link rel="stylesheet" href="/css/normalize.css">
   <link rel="stylesheet" href="/css/skeleton.css">
   <link rel="stylesheet" href="/css/sustainapp.css">
+  
+  <!-- Scripts
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+  <script src="searchresults.js"></script>
 
   <!-- Favicon
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -36,14 +41,25 @@
 
   <div class="container">
 	<div class="row">
-	<?php include 'displayResults.php'; ?>
+		<div id="searchresult" class="two-thirds column">
+			<div class="companyname"><h4 id="company_name"></h4></div>
+			<span id="company_score"></span>
+			<br>
+			<span id="upc"></span>
+			<br>
+			<span id="product_name"></span>
+			<p id="query_message"></p>
+			<p id="ajs"></p>
+			<p id="ajs1"></p>
+			<p id="ajs2"></p>
+		</div>
+		<div id="wrongresults" class="one-third column"></div>
 	</div>
 	
 	<div class="row">
 		<div class="one-third column searchcol">
 			<center>
 			<!-- image search -->
-			<!-- need to override max-width of elemnts to inheret from div (check out twelve column css -->
 			<input type="file" accept="image/*" capture="camera" class="bcimg srslyfit">
 			<br>
 			<button type="submit" class="srslyfit">Scan Barcode</button>
@@ -51,17 +67,11 @@
 		</div>
 		<div class="one-third column searchcol"><center>
 			<!-- barcode text box -->
-			<input type="number" class="srslyfit">
+			<input type="search" id="bc_input" class="srslyfit">
 			<br>
-			<button type="submit" class="srslyfit">Search Barcode</button>
-			</center>
-		</div>
-		<div class="one-third column searchcol">
-			<center>
-			<!-- company text box -->
-			<input type="search" class="srslyfit">
+			<button type="submit" onclick="searchBarcode();" class="srslyfit">Search Barcode</button>
 			<br>
-			<button type="submit" class="srslyfit">Search Company</button>
+			<button type="submit" onclick="searchCompany();" class="srslyfit">Search Company</button>
 			</center>
 		</div>
 	</div>

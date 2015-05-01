@@ -33,3 +33,15 @@ div.searchcol
 	Pink: #ED0D85
 	Green: #8BC540
 */
+
+div#searchresult
+{	display:none;
+}
+/*
+div.companyname
+h4#company_name
+span#company_score
+span#upc
+span#product_name
+p#query_message
+*/
