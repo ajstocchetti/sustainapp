@@ -15,6 +15,7 @@ function searchDB(searchType)
 	$("#company_name").empty();
 	$("#upc").empty();
 	$("#product_name").empty();
+	$("#query_message").empty();
 
 	// query for UPC/company
 	var searchURL = "../api/search.php";
