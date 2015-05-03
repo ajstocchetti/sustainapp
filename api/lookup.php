@@ -46,7 +46,7 @@ function processParams($upcCode, $searchMethod, $dataType=NULL)
 	if($searchMethod == "UPC")
 	{	getProductDigitEyes($upcCode,$dataType);	}
 	elseif($searchMethod == "COMPANY")
-	{	return getScoreForCompany($upcCode,$dataType);	}
+	{	return lookupCompanyDirectly($upcCode,$dataType);	}
 	else // search type not set or junk value
 	{	return isCompOrUPC($upcCode, $dataType);	}
 }
@@ -160,7 +160,7 @@ function isCompOrUPC($input, $dataType)
 	if(($inputLen>4) && ($inputLen<21))
 	{	return getProductDigitEyes($temp,$dataType);	}
 	else
-	{	return getScoreForCompany($input,$dataType);	}
+	{	return lookupCompanyDirectly($input,$dataType);	}
 }
 
 
@@ -248,7 +248,7 @@ function getProductDigitEyes($upcCode,$dataType)
 
 
 /*  ***** getScoreForData *****
-	description: looks up score given search data
+	description: looks up score based on barcode lookup results
 	params: company [opt] - company name
 			companyOther [opt] - other possible name for company
 			brand [opt] - name of brand of product
@@ -276,6 +276,24 @@ function getScoreForData($company, $companyOther="", $brand="", $description="",
 		$message = "Rating: $ourScore";
 	}
 	return doResponse($replyCode,$message,$ourScore,$company,$upc,$description,$companyOther,$dataType);
+}
+
+
+
+/*  ***** lookupCompanyDirectly *****
+	description: looks up score based on company name and calls into doResponse
+	params: company - company name
+			dataType [opt] - format to return. See doResponse for details
+	return: JSON echoed or PHP array
+	*************** */
+function lookupCompanyDirectly($company, $dataType)
+{	$ourScore = getScoreForCompany($company);
+	if( !$ourScore )
+	{	$message="Unfortunately, we do not have a Social Responsibility rating for $company at this time. Please bear with us while we grow our database of companies.";
+		return doResponse(300,$message,NULL,NULL,NULL,NULL,NULL,$dataType);
+	}
+	else // success
+	{	return doResponse(300,"Rating: $ourScore",NULL,NULL,NULL,NULL,NULL,$dataType);	}
 }
 
 
