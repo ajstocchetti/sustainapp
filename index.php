@@ -32,7 +32,7 @@
 
   <!-- Primary Page Layout
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <?php include '/modules/topbanner.html.php'; ?>  
+  <?php include $_SERVER['DOCUMENT_ROOT'].'/modules/topbanner.html.php'; ?>
 	
   <div class="container">
 	<div class="row">

@@ -7,6 +7,15 @@ p
 {	text-align:justify;
 }
 
+hr.result
+{	margin-top:3px;
+	margin-bottom:5px;
+	color:#1E92D0;
+	border-top:2px solid;
+	/*
+	*/
+}
+
 div.topbanner
 {	background-color:#8BC540;
 	width:100%;

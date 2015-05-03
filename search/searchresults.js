@@ -15,7 +15,7 @@ function searchDB(searchType)
 	$("#company_name").empty();
 	$("#upc").empty();
 	$("#product_name").empty();
-	$("#query_message").empty();
+	$("#query_message").html("Searching for "+inpt);
 
 	// query for UPC/company
 	var searchURL = "../api/search.php";
@@ -52,7 +52,7 @@ function searchDB(searchType)
 		}
 		if( "UPC" in data)
 		{	upc = data.UPC;
-			$("#upc").html("UPC: "+upc+"<br>");
+			$("#upc").html("UPC: "+upc+"<hr class=\"result\">");
 		}
 		if( msg != '')
 			$("#query_message").html(msg);

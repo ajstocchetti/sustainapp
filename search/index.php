@@ -52,7 +52,7 @@
 	</div>
 	
 	<div class="row">
-		<div class="one-third column searchcol">
+		<div class="one-half column searchcol">
 			<center>
 			<!-- image search -->
 			<input type="file" accept="image/*" capture="camera" class="bcimg srslyfit">
@@ -60,7 +60,7 @@
 			<button type="submit" class="srslyfit">Scan Barcode</button>
 			</center>
 		</div>
-		<div class="one-third column searchcol"><center>
+		<div class="one-half column searchcol"><center>
 			<!-- barcode text box -->
 			<input type="search" id="bc_input" class="srslyfit">
 			<br>
