@@ -60,7 +60,7 @@ function processParams($upcCode, $searchMethod, $dataType=NULL)
 	*************** */
 function noData($dataType=NULL)
 {	// TODO: make a real HTTP response when do the same for $retData
-	doResponse(0, "No data given. Please try again",NULL,NULL,NULL,NULL,NULL,$dataType);
+	doResponse(0, "No data given. Please scan a UPC or enter a company and try again",NULL,NULL,NULL,NULL,NULL,$dataType);
 }
 
 
@@ -98,9 +98,9 @@ function doResponse($progress, $message, $score=NULL, $company=NULL, $upc=NULL, 
 				201 - error with database query
 			300-399: errors with JM2 data - non SQL
 				300 - could not find company
-			900-999: testing purposes only, not to be displayed to end user
 			1000 - success
 				1000 - have score/success
+			1100-1199: testing purposes only, not to be displayed to end user
 		}
 		"MSG" => error/success message [opt]
 		"COMPANY" => company [opt]
@@ -136,7 +136,6 @@ function doResponse($progress, $message, $score=NULL, $company=NULL, $upc=NULL, 
 		// TODO: make a real HHTP response
 		// for now, just echo JSON
 		 echo $jsonResp;
-		//return "ANDY";//$jsonResp;
 		/* need pecl_http library...
 		HttpResponse::status(200);
 		HttpResponse::setContentType('application/json');
@@ -199,7 +198,9 @@ function getProductDigitEyes($upcCode,$dataType)
 		now onto cURL
 	*/
 	if( !function_exists('curl_version'))	// make sure cURL is enabled before trying to make call
-	{	return doResponse(115,"Curl not enabled",NULL,NULL,NULL,NULL,NULL,$dataType);
+	{	//return doResponse(115,"Curl not enabled",NULL,NULL,NULL,NULL,NULL,$dataType);
+		// TODO: log error here
+		return doResponse(115,"Unable to look up barcode at this time.",NULL,NULL,NULL,NULL,NULL,$dataType);
 	}
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $fullUrl);
@@ -209,7 +210,9 @@ function getProductDigitEyes($upcCode,$dataType)
 	$httpGetRespCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 	curl_close($ch);
 	if( $httpGetRespCode != 200) // TODO: make this a real error message
-	{	return doResponse(100,"Response code: " . $httpGetRespCode,NULL,NULL,NULL,NULL,NULL,$dataType);
+	{	//return doResponse(100,"Response code: " . $httpGetRespCode,NULL,NULL,NULL,NULL,NULL,$dataType);
+		// TODO: log error here
+		return doResponse(100,"Unable to access company lookup service at this time.",NULL,NULL,NULL,NULL,NULL,$dataType);
 	}
 	
 	// ********** Step 3: Parse JSON **********
@@ -229,7 +232,8 @@ function getProductDigitEyes($upcCode,$dataType)
 		$description = $JSONObject["description"];
 	if( empty($gcpCompany) && empty($mfctCompany) && empty($brand) && empty($description))	// no usefull data returned
 	{	// TODO: make call to query knowProducts table before giving up...maybe do this beofre digiteyes?
-		return doResponse(105,"No product info returned",NULL,NULL,NULL,NULL,NULL,$dataType);
+		return doResponse(105,"We could not find a product or company that matches $upcCode. Please try again.",NULL,NULL,NULL,NULL,NULL,$dataType);
+		// TODO: log an error here
 		// TODO: parse through JSON to get error message
 		// or maybe its not worth it...
 	}
@@ -265,10 +269,13 @@ function getScoreForData($company, $companyOther="", $brand="", $description="",
 		$ourScore = getScoreForUPC($upc);
 	
 	$replyCode=300;	// could not find score in database
+	$message="Unfortunately, we do not have a Social Responsibility rating for $company at this time. Please bear with us while we grow our database of companies.";
+	// TODO: improve this return message
 	if($ourScore)
-		$replyCode = 1000;	// success
-	// TODO: do something about return messages?
-	return doResponse($replyCode,"",$ourScore,$company,$upc,$description,$companyOther,$dataType);
+	{	$replyCode = 1000;	// success
+		$message = "Rating: $ourScore";
+	}
+	return doResponse($replyCode,$message,$ourScore,$company,$upc,$description,$companyOther,$dataType);
 }
 
 

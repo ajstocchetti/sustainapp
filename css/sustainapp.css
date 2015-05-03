@@ -37,9 +37,10 @@ div.searchcol
 div#searchresult
 {	display:none;
 }
-/*
-div.companyname
 h4#company_name
+{	margin-bottom:5px;
+}
+/*
 span#company_score
 span#upc
 span#product_name

@@ -42,16 +42,11 @@
   <div class="container">
 	<div class="row">
 		<div id="searchresult" class="two-thirds column">
-			<div class="companyname"><h4 id="company_name"></h4></div>
+			<h4 id="company_name"></h4>
 			<span id="company_score"></span>
-			<br>
-			<span id="upc"></span>
-			<br>
 			<span id="product_name"></span>
+			<span id="upc"></span>
 			<p id="query_message"></p>
-			<p id="ajs"></p>
-			<p id="ajs1"></p>
-			<p id="ajs2"></p>
 		</div>
 		<div id="wrongresults" class="one-third column"></div>
 	</div>
