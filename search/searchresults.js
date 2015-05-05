@@ -1,20 +1,26 @@
 function searchBarcode()
-{	searchDB("UPC");	}
+{	searchFromText("UPC");	}
 function searchCompany()
-{	searchDB("COMPANY");	}
+{	searchFromText("COMPANY");	}
 
-function searchDB(searchType)
+function searchFromText(searchType)
 {	var inpt = $('#bc_input').val();
+	searchDB(inpt, searchType);
+}
+function searchFromScan(scanCode)
+{	// assumes scanCode is UPC
+	searchDB(scanCode, "UPC");
+}
+
+function searchDB(inpt, searchType)
+{	// make sure they entered something
+	// but thorough validation is done on the backend
+	// searchFromScan should always have a input, but being safe for now
 	if( inpt == '')
 	{	return;	}
-	// make sure they entered something
-	// but validation is done on the backend
-	
+
 	// clear out any text from previous search
-	$("#company_score").empty();
-	$("#company_name").empty();
-	$("#upc").empty();
-	$("#product_name").empty();
+	clearResultDisplay();
 	$("#query_message").html("Searching for "+inpt);
 
 	// query for UPC/company
@@ -81,4 +87,12 @@ function getTextForScore(score)
 			break;
 	}
 	return text;
+}
+
+function clearResultDisplay()
+{	$("#company_score").empty();
+	$("#company_name").empty();
+	$("#upc").empty();
+	$("#product_name").empty();
+	$("#query_message").empty();
 }

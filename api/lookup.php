@@ -290,10 +290,10 @@ function lookupCompanyDirectly($company, $dataType)
 {	$ourScore = getScoreForCompany($company);
 	if( !$ourScore )
 	{	$message="Unfortunately, we do not have a Social Responsibility rating for $company at this time. Please bear with us while we grow our database of companies.";
-		return doResponse(300,$message,NULL,NULL,NULL,NULL,NULL,$dataType);
+		return doResponse(300,$message,NULL,$company,NULL,NULL,NULL,$dataType);
 	}
 	else // success
-	{	return doResponse(300,"Rating: $ourScore",NULL,NULL,NULL,NULL,NULL,$dataType);	}
+	{	return doResponse(1000,"Rating: $ourScore",$ourScore,$company,NULL,NULL,NULL,$dataType);	}
 }
 
 

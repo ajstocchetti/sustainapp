@@ -27,14 +27,10 @@ div.searchcol
 {	padding-bottom:30px;
 }
 
-.bcimg
-{	height:38px;
-}
-
 *.srslyfit
 {	max-width:100%;
 }
-	
+
 /*	***** COLORS *****
 	Blue: #1E92D0
 	Red: #E42225
@@ -43,15 +39,17 @@ div.searchcol
 	Green: #8BC540
 */
 
-div#searchresult
+input#Take-Picture
+{	visibility:hidden;
+	height:1px;
+	padding:0;
+	border:0;
+	margin:0;
+}
+canvas#bc_img_canvas
 {	display:none;
+	/* display: inline-block; */
 }
 h4#company_name
 {	margin-bottom:5px;
 }
-/*
-span#company_score
-span#upc
-span#product_name
-p#query_message
-*/

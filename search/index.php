@@ -27,6 +27,7 @@
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
   <script src="searchresults.js"></script>
+  <script src="JOB.js"></script>
 
   <!-- Favicon
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -55,21 +56,24 @@
 		<div class="one-half column searchcol">
 			<center>
 			<!-- image search -->
-			<input type="file" accept="image/*" capture="camera" class="bcimg srslyfit">
-			<br>
-			<button type="submit" class="srslyfit">Scan Barcode</button>
+			<button type="submit" onclick="$('#Take-Picture').click();" class="srslyfit">Scan Barcode</button>
+			<canvas width="320" height="240" id="bc_img_canvas" ></canvas>
+			<input id="Take-Picture" type="file" accept="image/*" capture="camera">
+			<script src="scanAndDecode.js"></script>
 			</center>
 		</div>
 		<div class="one-half column searchcol"><center>
 			<!-- barcode text box -->
 			<input type="search" id="bc_input" class="srslyfit">
 			<br>
-			<button type="submit" onclick="searchBarcode();" class="srslyfit">Search Barcode</button>
-			<br>
 			<button type="submit" onclick="searchCompany();" class="srslyfit">Search Company</button>
+			<br>
+			<button type="submit" onclick="searchBarcode();" class="srslyfit">Search Barcode</button>
 			</center>
 		</div>
 	</div>
+  	<?php include $_SERVER['DOCUMENT_ROOT'].'/modules/contact_social.html.php'; ?>
+  
   </div>
 
 <!-- End Document
