@@ -365,19 +365,56 @@ function getScoreForUPC($upc)
 
 /*  ***** getDBCon *****
 	description: creates a PDO connection, view only
-	params: none
+	params: write (opt) - set to yes to get write access
 	return: PDO object on success, "" on failure
 	*************** */
-function getDBCon()	{
+function getDBCon($write)	{
 	try {
-		global $sql_SA, $database_SA, $user_SA, $pwd_SA;
-		$db = new PDO("mysql:host=$sql_SA;dbname=$database_SA", $user_SA, $pwd_SA);
+		global $sql_SA, $database_SA, $user_SA, $pwd_SA, $user_write_SA, $pwd_write_SA;
+		$dbLogin;
+		$dbPassword;
+		if($write==TRUE)
+		{	$dbLogin = $user_write_SA;
+			$dbPassword = $pwd_write_SA;
+		}
+		else
+		{	$dbLogin = $user_SA;
+			$dbPassword = $pwd_SA;
+		}
+		$db = new PDO("mysql:host=$sql_SA;dbname=$database_SA", $dbLogin, $dbPassword);
 		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		return $db;
 	}
 	catch(PDOException $e) {
 		// TODO: log error somewhere
 		return "";
+	}
+}
+
+
+/*  ***** updateUPCTable *****
+	description: adds UPC and company name 
+	params: upc - the UPC code
+			company - the (official) company name
+			compID (opt) - the primary key of the company - not used
+	return: nothing
+	*************** */
+function updateUPCTable($upc, $company, $compID=NULL)
+{	$writeCon = getDBCon(TRUE);
+	if(!empty($writeCon))
+	{	// step 1: does UPC exist already?
+		global $upcTable;
+		$query = "IF EXISTS (SELECT * FROM $upcTable WHERE upccode = ?)
+			UPDATE $upcTable SET lastUpdate=CURRENT_TIMESTAMP
+		ELSE
+			INSERT INTO $upcTable (upccode, companyName) VALUES (?, ?)";
+		$stmt = $writeCon->prepare($query);
+		$stmt->bindParam(1, strtoupper($upc), PDO::PARAM_STR);
+		$stmt->bindParam(2, strtoupper($upc), PDO::PARAM_STR);
+		$stmt->bindParam(3, $company, PDO::PARAM_STR);
+		$stmt->execute();
+		// TODO: check if this works, log error if not
+		
 	}
 }
 ?>
