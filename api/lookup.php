@@ -44,7 +44,7 @@ function processParams($upcCode, $searchMethod, $dataType=NULL)
 {	if( empty($upcCode))	// quit now if no UPC or company to lookup
 	{	return noData($dataType);	}
 	if($searchMethod == "UPC")
-	{	getProductDigitEyes($upcCode,$dataType);	}
+	{	initiateUPCLookup($upcCode,$dataType);	}
 	elseif($searchMethod == "COMPANY")
 	{	return lookupCompanyDirectly($upcCode,$dataType);	}
 	else // search type not set or junk value
@@ -158,11 +158,33 @@ function isCompOrUPC($input, $dataType)
 	$temp = preg_replace("/[^0-9]/", "", $input);
 	$inputLen = strlen($temp);
 	if(($inputLen>4) && ($inputLen<21))
-	{	return getProductDigitEyes($temp,$dataType);	}
+	{	return initiateUPCLookup($temp,$dataType);	}
 	else
 	{	return lookupCompanyDirectly($input,$dataType);	}
 }
 
+
+
+/* ***** initiateUPCLookup *****
+	description: starts lookup for a UPC, first
+		by searching saved UPCs, then querying
+		third party API
+	params:	upcCode - UPC to look up
+			dataType [opt] - format to return. See doResponse for details
+	return: JSON echoed or PHP array
+*/
+function initiateUPCLookup($upcCode, $dataType)
+{	$upcLookup = getScoreForUPC($upcCode);
+	if( $upcLookup == FALSE)
+	{	return getProductDigitEyes($upcCode, $dataType);	}
+	else
+	{	$replyCode = 1000;	// success
+		$ourScore = $upcLookup("score");
+		$company = $upcLookup("company");
+		$message = "Rating: $ourScore";
+		return doResponse($replyCode,$message,$ourScore,$company,$upcCode,"","",$dataType);
+	}
+}
 
 
 /*  ***** getProductDigitEyes *****
@@ -231,8 +253,7 @@ function getProductDigitEyes($upcCode,$dataType)
 	if(isset($JSONObject["description"]))
 		$description = $JSONObject["description"];
 	if( empty($gcpCompany) && empty($mfctCompany) && empty($brand) && empty($description))	// no usefull data returned
-	{	// TODO: make call to query knowProducts table before giving up...maybe do this beofre digiteyes?
-		return doResponse(105,"We could not find a product or company that matches $upcCode. Please try again.",NULL,NULL,NULL,NULL,NULL,$dataType);
+	{	return doResponse(105,"We could not find a product or company that matches $upcCode. Please try again.",NULL,NULL,NULL,NULL,NULL,$dataType);
 		// TODO: log an error here
 		// TODO: parse through JSON to get error message
 		// or maybe its not worth it...
@@ -241,7 +262,11 @@ function getProductDigitEyes($upcCode,$dataType)
 	// ********** Step 4: Query Scores DB **********
 	$upcReturned = $upcCode;
 	if( isset($JSONObject["upc_code"]))
-		$upcReturned = $JSONObject["upc_code"];
+	{	$upcReturned = $JSONObject["upc_code"];
+		// log new UPC if we have one
+		if( isset($gcpCompany))
+			updateUPCTable($upcReturned, $gcpCompany);
+	}
 	return getScoreForData($gcpCompany, $mfctCompany, $brand, $description, $upcReturned, $dataType);
 }
 
@@ -266,7 +291,12 @@ function getScoreForData($company, $companyOther="", $brand="", $description="",
 		$ourScore = getScoreForCompany($companyOther);
 	// TODO: somehow get company name from brand
 	if( !$ourScore && !empty($upc))
-		$ourScore = getScoreForUPC($upc);
+	{	$upcLookup = getScoreForUPC($upc);
+		if($upcLookup!=FALSE)
+		{	$ourScore = $upcLookup("score");
+			$company = $upcLookup("company");
+		}
+	}
 	
 	$replyCode=300;	// could not find score in database
 	$message="Unfortunately, we do not have a Social Responsibility rating for $company at this time. Please bear with us while we grow our database of companies.";
@@ -339,26 +369,29 @@ function getScoreForCompany($company)
 	description: looks up company from knownProducts then score for company
 					this searches JM2 database
 	params: upc - upc code to search for
-	return: score for company if found
+	return: array with score, company if found
 			FALSE if not found (yay php and mixed data types)
 	*************** */
 function getScoreForUPC($upc)
 {	$con = getDBCon();
-	if( $con == "")	// could not connect
-	{	//doResponse(201, "Could not connect to database");
-		return FALSE;
+	if( !empty($con))
+	{	// if here, we have a PDO connection
+		global $upcTable, $scoreTable;
+		//$query = "SELECT * FROM $scoreTable where companyID in (SELECT companyID from $upcTable where upccode = ?)";
+		$query = "SELECT * FROM $scoreTable where company in (SELECT companyName from $upcTable where upccode = ?)";
+		// TODO: update to check how recent this is, check if company ID exists
+		$stmt = $con->prepare($query);
+		$stmt->bindParam(1, strtoupper($upc), PDO::PARAM_STR);
+		$stmt->execute();
+		if( $stmt->rowCount() > 0)	// TODO: drop error if more than 1 result
+		{	$rslt = $stmt->fetch(PDO::FETCH_OBJ);
+			$ary("score") = $rslt->score;
+			$ary("company") = $rslt->company;
+			return $ary;
+		}
 	}
-	// if here, we have a PDO connection
-	global $upcTable, $scoreTable; // TODO: add upcTable to base level file
-	// TODO: 
-	$query = "SELECT * FROM $scoreTable where companyID in (SELECT companyID from $upcTable where upccode = ?)";
-	$stmt = $con->prepare($query);
-	$stmt->bindParam(1, strtoupper($upc), PDO::PARAM_STR);
-	$stmt->execute();
-	if( $stmt->rowCount() > 0)	// TODO: drop error if more than 1 result
-	{	$rslt = $stmt->fetch(PDO::FETCH_OBJ);
-		return $rslt->score;
-	}
+	// either no connection or no object found
+	return FALSE;
 }
 
 
@@ -392,6 +425,7 @@ function getDBCon($write)	{
 }
 
 
+
 /*  ***** updateUPCTable *****
 	description: adds UPC and company name 
 	params: upc - the UPC code
@@ -402,19 +436,17 @@ function getDBCon($write)	{
 function updateUPCTable($upc, $company, $compID=NULL)
 {	$writeCon = getDBCon(TRUE);
 	if(!empty($writeCon))
-	{	// step 1: does UPC exist already?
-		global $upcTable;
-		$query = "IF EXISTS (SELECT * FROM $upcTable WHERE upccode = ?)
-			UPDATE $upcTable SET lastUpdate=CURRENT_TIMESTAMP
-		ELSE
-			INSERT INTO $upcTable (upccode, companyName) VALUES (?, ?)";
+	{	global $upcTable;
+		// replace into will update, insert ignore will not update (the ignore silences the error) 
+		$query = "REPLACE INTO $upcTable (upccode, companyName, companyID) VALUES (?, ?, ?)";
+		// $query = "INSERT IGNORE INTO $upcTable (upccode, companyName, companyID) VALUES (?, ?, ?)";
+		
 		$stmt = $writeCon->prepare($query);
 		$stmt->bindParam(1, strtoupper($upc), PDO::PARAM_STR);
-		$stmt->bindParam(2, strtoupper($upc), PDO::PARAM_STR);
-		$stmt->bindParam(3, $company, PDO::PARAM_STR);
+		$stmt->bindParam(2, $company, PDO::PARAM_STR);
+		$stmt->bindParam(3, $compID, PDO::PARAM_STR);
 		$stmt->execute();
-		// TODO: check if this works, log error if not
-		
+		// TODO: log error if stmt fails
 	}
 }
 ?>
