@@ -2,4 +2,8 @@
 search/test.php
 search/displayResults.php
 
+# error logs
+error/log/**
+
+# cloud nine logs
 .c9

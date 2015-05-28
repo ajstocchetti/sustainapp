@@ -385,8 +385,8 @@ function getScoreForUPC($upc)
 		$stmt->execute();
 		if( $stmt->rowCount() > 0)	// TODO: drop error if more than 1 result
 		{	$rslt = $stmt->fetch(PDO::FETCH_OBJ);
-			$ary("score") = $rslt->score;
-			$ary("company") = $rslt->company;
+			$ary["score"] = $rslt->score;
+			$ary["company"] = $rslt->company;
 			return $ary;
 		}
 	}
