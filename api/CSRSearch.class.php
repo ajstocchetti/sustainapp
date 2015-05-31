@@ -313,7 +313,7 @@ class CSRSearch
 	sets:	processedUPC, companyName, companyAlia, productDescription (on success)	
 	*************** */
 	private function lookupUPCDigiteyes($upcCode)
-	{	// TODO: make sure UPC code is only numbers
+	{	// TODO: make sure UPC code is only numbers - but some new UPC codes have letters
 			// if searchtype=UPC we haven't done any validation on the upc code
 		// ********** Step 1: Generate URL for digit-eyes HTTP call **********
 		$baseURL = "http://www.digit-eyes.com/gtin/";
