@@ -13,7 +13,8 @@ class CSRSearch
 	private $userInput;	// set once, NEVER MODIFY
 	private $searchTypeInput;	// set once, NEVER MODIFY
 	private $searchMethod;	// UPC or COMPANY
-	private $processedUPC;
+	private $processedUPC;	// what we search on, may have been modified by this code
+	private $returnedUPC;	// what is returned from 3rd party UPC lookup 
 	private $companyName;
 	private $companyAlias;
 	private $responseCode;
@@ -47,12 +48,21 @@ class CSRSearch
 	// TODO: header
 	function getResults()
 	{	// TODO: this
+		if(empty($this->responseCode))
+		{	$this->responseAndMessage(0,"An unexpected error occurred");
+			$text = "No response code calculated for search term: " . $this->userInput;
+			$text .= " and search type: " . $this->searchTypeInput;
+			$this->logError(0, $text, __FILE__, __LINE__);
+		}
 		$array;
 		$array["PROGRESS"] = 	$this->responseCode;
 		$array["MSG"] = 		$this->responseMessage;
 		$array["RATING"] = 		$this->score;
 		$array["COMPANY"] = 	$this->companyName;
-		$array["UPC"] = 		$this->processedUPC;
+		$array["UPC"] = 		$this->returnedUPC;
+		if( empty($array["UPC"]))	{
+			$array["UPC"] = 	$this->processedUPC;
+		}	
 		$array["DESCRIPTION"] = $this->productDescription;
 		$array["COMPALIAS"] = 	$this->companyAlias;
 		$jsonResp = json_encode($array);
@@ -91,7 +101,7 @@ class CSRSearch
 			return $db;
 		}
 		catch(PDOException $e) {
-			$this->logSQLError(1, $e->getMessage(), __FILE__, __LINE__);
+			$this->logError(1, $e->getMessage(), __FILE__, __LINE__);
 			return NULL;
 		}
 	}
@@ -171,7 +181,7 @@ class CSRSearch
 				$this->determineSearchType($this->userInput);
 		}
 		else
-		{	$this->responseAndMessage(0);	}
+		{	$this->responseAndMessage(1);	}
 	}
 
 
@@ -279,6 +289,7 @@ class CSRSearch
 				if( $stmt->rowCount() > 0)	// TODO: drop error if more than 1 result
 				{	$rslt = $stmt->fetch(PDO::FETCH_OBJ);
 					$this->companyName = $rslt->companyName;
+					$this->productDescription = $rslt->description;
 				}
 				else	// UPC not in our table
 				{	$this->lookupUPCDigiteyes($upc);	}
@@ -323,7 +334,7 @@ class CSRSearch
 
 		// ********** Step 2: Make HTTP Call **********
 		if( !function_exists('curl_version'))	// make sure cURL is enabled before trying to make call
-		{	$this->logSQLError(600, "Curl not enabled", __FILE__, __LINE__);
+		{	$this->logError(600, "Curl not enabled", __FILE__, __LINE__);
 			$this->responseAndMessage(115);	// curl not enabled
 		}
 		else
@@ -335,7 +346,7 @@ class CSRSearch
 			$httpGetRespCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 			curl_close($ch);
 			if( $httpGetRespCode != 200)
-			{	$this->logSQLError(700, "Response code: " . $httpGetRespCode, __FILE__, __LINE__);
+			{	$this->logError(700, "Response code: " . $httpGetRespCode, __FILE__, __LINE__);
 				// TODO: parse through result, maybe give response code 105
 				$this->responseAndMessage(100);
 			}
@@ -349,7 +360,7 @@ class CSRSearch
 					$JSONObject["brand"]
 					$JSONObject["description"]			*/
 				if(isset($JSONObject["upc_code"]))
-					$this->processedUPC = $JSONObject["upc_code"];
+					$this->returnedUPC = $JSONObject["upc_code"];
 				if(isset($JSONObject["manufacturer"]["company"]))
 				{	$this->companyName = $JSONObject["manufacturer"]["company"];
 					$this->companyAlias = $JSONObject["manufacturer"]["company"];
@@ -363,14 +374,16 @@ class CSRSearch
 				if( !empty($this->companyName))	// got info from digit-eyes
 				{	$this->setDBWrite();
 					if( $this->canWriteDB())
-					{	$this->updateUPCTable($this->dbWrite,$this->processedUPC,$this->companyName);
-						if($this->processedUPC != $this->userInput)
-							updateUPCTable($this->dbWrite,$this->userInput,$this->companyName);
+					{	$this->updateUPCTable($this->dbWrite,$this->processedUPC,$this->returnedUPC,$this->companyName,$this->productDescription,"Digiteyes");
+						if($this->processedUPC !== $this->returnedUPC) {
+							// need type check (!==) - need strings due to leading zeroes in barcodes will drop if integers
+							$this->updateUPCTable($this->dbWrite,$this->returnedUPC,$this->returnedUPC,$this->companyName,$this->productDescription,"Digiteyes");
+						}
 					}
 					else	// can't make connection
-					{	$errMessage = "Could not update UPC table with UPC: " . $this->processedUPC;
+					{	$errMessage = "Could not update UPC table with UPC: " . $this->returnedUPC;
 						$errMessage .= " and company: " . $this->companyName;
-						$this->logSQLError(3, $errMessage , __FILE__, __LINE__);
+						$this->logError(3, $errMessage , __FILE__, __LINE__);
 					}
 				}	// end of updating UPC table
 				else	// no useful data from digit-eyes
@@ -387,23 +400,30 @@ class CSRSearch
 	params:	connection
 			upc
 			company
+			desc - description of product
+			source - where getting the UPC from
 			compID
 	return: nothing
 	sets:	nothing
-	*************** */		
-	private function updateUPCTable($connection,$upc,$company,$compID=NULL)
+	*************** */
+	private function updateUPCTable($connection,$upc,$retUPC,$company,$desc=NULL,$source=NULL,$compID=NULL)
 	{	global $upcTable;
 		// replace into will update, insert ignore will not update (the ignore silences the error) 
-		$query = "REPLACE INTO $upcTable (upccode, companyName, companyID) VALUES (?, ?, ?)";
-		// $query = "INSERT IGNORE INTO $upcTable (upccode, companyName, companyID) VALUES (?, ?, ?)";
+		$query = "REPLACE INTO $upcTable (upccode, properUPC, companyName, description, source, companyID) VALUES (?, ?, ?, ?, ?, ?)";
+		// $query = "INSERT IGNORE INTO $upcTable (upccode, properUPC, companyName, description, source, companyID) VALUES (?, ?, ?, ?, ?, ?)";
 		
-		$stmt = $connection->prepare($query);
-		$stmt->bindParam(1, strtoupper($upc), PDO::PARAM_STR);
-		$stmt->bindParam(2, $company, PDO::PARAM_STR);
-		$stmt->bindParam(3, $compID, PDO::PARAM_STR);
-		$stmt->execute();
-		// TODO: log error if stmt fails
-		// $this->logSQLError();	
+		try	{
+			$stmt = $connection->prepare($query);
+			$stmt->bindParam(1, strtoupper($upc), PDO::PARAM_STR);
+			$stmt->bindParam(2, strtoupper($retUPC), PDO::PARAM_STR);
+			$stmt->bindParam(3, $company, PDO::PARAM_STR);
+			$stmt->bindParam(4, $desc, PDO::PARAM_STR);
+			$stmt->bindParam(5, $source, PDO::PARAM_STR);
+			$stmt->bindParam(6, $compID, PDO::PARAM_STR);
+			$stmt->execute();
+		} catch(PDOException $e) {
+			$this->logError(3,$e->getMessage(),__FILE__,__LINE__);
+		}
 	}
 
 
@@ -422,8 +442,8 @@ class CSRSearch
 	
 	codes:
 		<0 - always display message on device
-		0-99: didn't try UPC lookup
-			0 - no input parameters specified
+		1-99: didn't try UPC lookup
+			1 - no input parameters specified
 		100-199: failed UPC lookup
 			100 - error looking up UPC from digitEyes/etc (HTTP error)
 			105 - UPC not found in digiteyes/etc database
@@ -439,11 +459,12 @@ class CSRSearch
 	*************** */
 	private function responseAndMessage($respCode,$message="")
 	{	switch($respCode)
-		{	case 0:
+		{	case 1:
 				$message = "No data given. Please scan a UPC or enter a company and try again";
 				break;
 			case 100:
-				$message = "Unable to access company lookup service at this time.";
+				//$message = "Unable to access company lookup service at this time.";
+				$message = "We could not find a product that matches " . $this->userInput . ". Please try again.";
 				break;
 			case 105:
 				$message = "We could not find a product that matches " . $this->userInput . ". Please try again.";
@@ -464,7 +485,7 @@ class CSRSearch
 				$message = "Rating: " . $this->score;
 				break;
 		}
-		if( strlen($message)==0)	// somehow there is no message
+		if( strlen($message)==0)	// passed in non-defined code with no message
 			$message = "Could not find a CSR rating";
 		$this->responseCode = $respCode;
 		$this->responseMessage = $message;
@@ -476,8 +497,8 @@ class CSRSearch
 
 	/* ********** error logging methods ********** */
 
-	// TODO: rename
-	private function logSQLError($errorType, $errorText, $file, $lineNum)
+	// TODO: header
+	private function logError($errorType, $errorText, $file, $lineNum)
 	{	$errLog = new errorLoger();
 		$errLog->logError($errorType, $errorText, $file, $lineNum);
 	}

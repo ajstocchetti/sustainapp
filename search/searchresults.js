@@ -12,12 +12,13 @@ function searchFromScan(scanCode)
 	searchDB(scanCode, "UPC");
 }
 
-function searchDB(inpt, searchType)
-{	// make sure they entered something
+function searchDB(inpt, searchType) {
+	// make sure they entered something
 	// but thorough validation is done on the backend
 	// searchFromScan should always have a input, but being safe for now
-	if( inpt == '')
-	{	return;	}
+	if( inpt == '') {
+		return;
+	}
 
 	// clear out any text from previous search
 	clearResultDisplay();
@@ -30,33 +31,35 @@ function searchDB(inpt, searchType)
 		"searchtype": searchType
 	};
 	$.getJSON(searchURL, params, function(data, status){
+		/*
 		var prog;
 		var msg;
 		var comp;
 		var score;
 		var upc;
 		var desc;
+		*/
 		if( !("PROGRESS" in data))
 			return;	// quit if no status returned
 		prog = data.PROGRESS;
 		if(prog < 1000) // don't show message if response code is over 999
-		{	if( "MSG" in data)
+		{	if( ("MSG" in data) && (data["MSG"] != null))
 				msg = data.MSG;
 		}
-		if( "COMPANY" in data)
+		if( data.COMPANY)
 		{	comp = data.COMPANY;
 			$("#company_name").html(comp);
 		}
-		if( "RATING" in data)
+		if( data.RATING)
 		{	score = data.RATING;
 			msg = getTextForScore(score);
 			$("#company_score").html("Rating: <b>"+score+"</b><br>");
 		}
-		if( "DESCRIPTION" in data)
+		if( data.DESCRIPTION)
 		{	desc = data.DESCRIPTION;
 			$("#product_name").html(desc+"<br>");
 		}
-		if( "UPC" in data)
+		if( data.UPC)
 		{	upc = data.UPC;
 			$("#upc").html("UPC: "+upc+"<hr class=\"result\">");
 		}
@@ -86,6 +89,7 @@ function getTextForScore(score)
 			text = "Companies with an F rating are actively engaging in the worst social and environmental practices in their industry.";
 			break;
 	}
+	text += " CSR rating provided by <a href=\"http://www.betterworldshopper.com/rankings.html\" target=\"_blank\">Better World Shopper</a>.";
 	return text;
 }
 
