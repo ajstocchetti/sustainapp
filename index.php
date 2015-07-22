@@ -1,80 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-
-  <!-- Basic Page Needs
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <meta charset="utf-8">
-  <title>SustainApp | A Smarter Way to Shop</title>
-  <meta name="description" content="sustainability sustainable app for corporate social responsibility">
-  <meta name="author" content="JM2">
-
-  <!-- Mobile Specific Metas
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- FONT
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
-
-  <!-- CSS
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="stylesheet" href="/css/normalize.css">
-  <link rel="stylesheet" href="/css/skeleton.css">
-  <link rel="stylesheet" href="/css/sustainapp.css">
-
-  <!-- Favicon
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="icon" type="image/png" href="/images/favicon.png">
-  
-    <!-- Scripts
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
-  <script src="/scripts/searchresults.js"></script>
-  <script src="/scripts/JOB.js"></script>
-
-</head>
+<?php
+	include($_SERVER['DOCUMENT_ROOT']."/modules/head.html.php");
+?>
 <body>
-
-  <!-- Primary Page Layout
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <?php include $_SERVER['DOCUMENT_ROOT'].'/modules/topbanner.html.php'; ?>
-	
-  <div class="container">
+<?php
+	include($_SERVER['DOCUMENT_ROOT']."/modules/header_nav.html.php");
+?>
+<div class="container">
 	<div class="row">
-		<div id="searchresult" class="two-thirds column">
+		<a name="scan_start" id="scan_start"></a>
+		<div id="searchresult" class="col-sm-8 column">
 			<h4 id="company_name"></h4>
 			<span id="company_score"></span>
 			<span id="product_name"></span>
 			<span id="upc"></span>
 			<p id="query_message">Click 'Scan Barcode' to take a photo, or use the text box to manually enter a company name or the barcode of a product.</p>
 		</div>
-		<div id="wrongresults" class="one-third column"></div>
+		<div id="wrongresults" class="col-sm-4"></div>
 	</div>
 	
 	<div class="row">
-		<div class="one-half column searchcol">
+		<div class="col-sm-6 searchcol">
 			<center>
 			<!-- image search -->
-			<button type="submit" onclick="$('#Take-Picture').click();" class="srslyfit">Scan Barcode</button>
+			<button type="submit" onclick="$('#Take-Picture').click();" class="btnStd-full">Scan Barcode</button>
 			<canvas width="320" height="240" id="bc_img_canvas" ></canvas>
 			<input id="Take-Picture" type="file" accept="image/*" capture="camera">
-			<script src="/scripts/scanAndDecode.js"></script>
 			</center>
 		</div>
-		<div class="one-half column searchcol"><center>
-			<!-- barcode text box -->
-			<input type="search" id="bc_input" class="srslyfit">
-			<br>
-			<button type="submit" onclick="searchCompany();" class="srslyfit">Search Company</button>
-			<br>
-			<button type="submit" onclick="searchBarcode();" class="srslyfit">Search Barcode</button>
+		<div class="col-sm-6 searchcol">
+			<center>
+				<!-- barcode text box -->
+				<input type="search" id="bc_input" class="btnStd">
+				<br>
+				<button type="submit" onclick="searchCompany();" class="btnStd-full">Search Company</button>
+				<br>
+				<button type="submit" onclick="searchBarcode();" class="btnStd-full">Search Barcode</button>
 			</center>
 		</div>
 	</div> 
-  </div>
+</div><!-- /container -->
 
-<!-- End Document
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<!-- product lookup scripts -->
+<script src="/assets/js/app.js"></script>
+<script src="/assets/js/JOB.js"></script>
+<script src="/assets/js/scanAndDecode.js"></script>
+
+<?php
+	include($_SERVER['DOCUMENT_ROOT']."/modules/end_js.html.php");
+?>
 </body>
 </html>
