@@ -1,14 +1,18 @@
-function searchBarcode()
-{	searchFromText("UPC");	}
-function searchCompany()
-{	searchFromText("COMPANY");	}
+function searchBarcode() {
+	searchFromText("UPC");
+}
 
-function searchFromText(searchType)
-{	var inpt = $('#bc_input').val();
+function searchCompany() {
+	searchFromText("COMPANY");
+}
+
+function searchFromText(searchType) {
+	var inpt = $('#bc_input').val();
 	searchDB(inpt, searchType);
 }
-function searchFromScan(scanCode)
-{	// assumes scanCode is UPC
+
+function searchFromScan(scanCode) {
+	// assumes scanCode is UPC
 	searchDB(scanCode, "UPC");
 }
 
@@ -25,20 +29,12 @@ function searchDB(inpt, searchType) {
 	$("#query_message").html("Searching for "+inpt);
 
 	// query for UPC/company
-	var searchURL = "../api/search.php";
+	var searchURL = "/api/search.php";
 	var params = {
 		"upcc": inpt,
 		"searchtype": searchType
 	};
 	$.getJSON(searchURL, params, function(data, status){
-		/*
-		var prog;
-		var msg;
-		var comp;
-		var score;
-		var upc;
-		var desc;
-		*/
 		if( !("PROGRESS" in data))
 			return;	// quit if no status returned
 		prog = data.PROGRESS;

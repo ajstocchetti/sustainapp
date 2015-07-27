@@ -1,0 +1,111 @@
+/*
+@import url(https://fonts.googleapis.com/css?family=Raleway|Muli|Abel|Roboto:400,700,900|Roboto+Slab:400,700);
+@import url(http://fonts.googleapis.com/css?family=Raleway|Muli|Abel|Roboto:400,700,900|Roboto+Slab:400,700);
+*/
+@import url(https://fonts.googleapis.com/css?family=Raleway);
+
+body {
+/*	technically, this is the yellow color
+	background-color:#F8a71D;	*/
+	background-color:#FADC10;
+	font-family: 'Raleway', sans-serif;
+}
+
+.acnt {
+	//font-family: 'Roboto Slab', serif;
+}
+
+.btnStd, .btnStd-full {
+	/* standard button  - if this is modified, update li.navLink */
+	margin: 5px;
+	padding: 6px 10px;
+	border-radius: 8px;
+	border: 2px solid #106333;
+	width: 180px;
+}
+.btnStd-full {
+	background-color:#8BC63F
+}
+.btnStd-full:hover {
+	border-color:#FFFA00;
+}
+
+/* ***** navigation ***** */
+nav.navbar-default {
+	position:absolute;
+	top:0;
+	width:100%;
+	border:none;
+	border-top:2px solid;
+	border-bottom:2px solid;
+	background-color: #8BC63F;
+	border-color: #106333;
+}
+.navbar-title {
+	padding-left:10px;
+	margin:5px;
+}
+li.navlink {
+	padding:0px 0px;
+	margin:5px;
+}
+.navbar-nav>li.navlink>a {
+	padding:0;
+	margin:0;
+	color:black;
+}
+@media (min-width: 768px) {
+	nav.navbar-default {
+		//margin-top:50px;
+		//margin-bottom:0px;
+		border-radius:0;
+		position:relative;
+	}
+	li.navlink-box {
+		padding:6px 10px;
+		border-radius:8px;
+		border:2px solid #106333;
+	}
+	li.navlink-box:hover {
+		border-color:#FFFA00;
+	}
+	.navbar-title {
+		display:none;
+	}
+}
+/* ***** navigation end ***** */
+
+.header {
+	margin-top:70px;
+	margin-bottom:20px;
+}
+@media (min-width: 768px) {
+	.header {
+		margin-top:40px;
+		/* at full screen size, dont need to leave room for navbar */
+	}
+
+}
+
+
+img.logo {
+	display: block;
+	margin: 0 auto;
+}
+
+
+/* ***** search buttons & result display ***** */
+input#Take-Picture {
+  visibility: hidden;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  margin: 0;
+}
+canvas#bc_img_canvas {
+  display: none;
+}
+
+#rslt-company {
+	font-size: 18pt;
+}

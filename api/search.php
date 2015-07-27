@@ -1,8 +1,4 @@
 <?php
-	//REQUIRE_ONCE('lookup.php');
-	//getParams();
-	
-	
 	REQUIRE_ONCE($_SERVER['DOCUMENT_ROOT']."/api/CSRSearch.class.php");
 
 	$upcCode = NULL;
@@ -15,6 +11,4 @@
 	$searcher = new CSRSearch($upcCode,$searchMethod);
 	$searcher->search();
 	$searcher->getResults();
-	
-	
 ?>
