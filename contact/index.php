@@ -53,7 +53,7 @@
 			<br><br>
 			<div>
 				<h2>Support Us</h2>
-				<p>Dou you like SustainApp? Does it add value to your life? Would you like to see it continue to develop? Use one of the buttons below to make a contribution to the future of SustainApp.</p>
+				<p>Do you like SustainApp? Does it add value to your life? Would you like to see it continue to develop? Use one of the buttons below to make a contribution to the future of SustainApp.</p>
 				<div class="col-xs-12 col-sm-4 col-lg-3">
 				<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
 					<input type="hidden" name="cmd" value="_s-xclick">
