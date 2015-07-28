@@ -52,6 +52,34 @@
 			
 			<br><br>
 			<div>
+				<h2>Support Us</h2>
+				<p>Dou you like SustainApp? Does it add value to your life? Would you like to see it continue to develop? Use one of the buttons below to make a contribution to the future of SustainApp.</p>
+				<div class="col-xs-12 col-sm-4 col-lg-3">
+				<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+					<input type="hidden" name="cmd" value="_s-xclick">
+					<input type="hidden" name="hosted_button_id" value="5WZW2N9VQSZ3N">
+					<button type="submit" class="btnStd-full">Donate $2</button>
+				</form>
+				</div>
+				<div class="col-xs-12 col-sm-4 col-lg-3">
+				<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+					<input type="hidden" name="cmd" value="_s-xclick">
+					<input type="hidden" name="hosted_button_id" value="MRDPQ27Q2WW4U">
+					<button type="submit" class="btnStd-full">Donate $5</button>
+				</form>
+				</div>
+				<div class="col-xs-12 col-sm-4 col-lg-3">
+				<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+					<input type="hidden" name="cmd" value="_s-xclick">
+					<input type="hidden" name="hosted_button_id" value="BB7P2ULGH7H5J">
+					<button type="submit" class="btnStd-full">Other Amount</button>
+				</form>
+				</div>
+			</div>
+			
+			
+			<br><br>
+			<div>
 			<h2>Follow Us</h2>
 				<a href="https://www.facebook.com/SustainApp" target="_blank"><img src="/images/facebook_header.png" alt="Like us on Facebook"></a>
 				&nbsp; &nbsp; &nbsp;
