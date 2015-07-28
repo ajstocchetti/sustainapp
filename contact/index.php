@@ -9,7 +9,6 @@
 		<div class="col-xs-12">
 			<h2>Contact us</h2>
 			<p>If you have any questions or want to get involved, you can send us an email at <a href="mailto:info@sustainapp.com">info@sustainapp.com</a>. Also, join our mailing list through the form below. We'll keep you up to date on our progress, releases, and any important news. And don't worry, we promise not to sell your data or do anything like that. (What would that do for <i>our</i> CSR&#8253;)</p>
-			
 
 			<!-- Begin MailChimp Signup Form -->
 			<div id="mc_embed_signup">
@@ -49,8 +48,8 @@
 			<script type='text/javascript' src='//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js'></script>
 			<script type='text/javascript'>(function($) {window.fnames = new Array(); window.ftypes = new Array();fnames[0]='EMAIL';ftypes[0]='email';fnames[1]='FNAME';ftypes[1]='text';fnames[2]='LNAME';ftypes[2]='text';}(jQuery));var $mcj = jQuery.noConflict(true);</script>
 			</div><!--end mailchimp mc_embed_signup-->
-
-
+			
+			
 			<br><br>
 			<div>
 			<h2>Follow Us</h2>

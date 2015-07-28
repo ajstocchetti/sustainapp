@@ -109,3 +109,19 @@ canvas#bc_img_canvas {
 #rslt-company {
 	font-size: 18pt;
 }
+
+@media (min-width: 768px) {
+	.founder-title {
+		min-height: 140px;
+	}
+}
+@media (min-width: 1000px) {
+	.founder-title {
+		min-height: 115px;
+	}
+}
+@media (min-width: 1200px) {
+	.founder-title {
+		min-height: 15px;
+	}
+}

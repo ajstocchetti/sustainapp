@@ -25,15 +25,30 @@
 		<h1>Founders</h1>
 		<p>Meet the three founders of SustainApp</p>
 		<div class="col-sm-4">
-			<h2>Jeff Meek</h2>
+			<div class="founder-title">
+				<h2>Jeff Meek</h2>
+				<h3>Business Operations</h3>
+			</div>
+			<img src="/images/jeff_headshot_350.JPG" class="img-responsive center-block" alt="Jeff Meek headshot">
+			<br>
 			<p>Jeff was the inspiration for SustainApp when it was discovered that he carried a the Better World Shopper book everywhere so he could make informed purchasing decisions (as if it were the stone age). He has long been involved with NGOs and government agencies where he uses his passion for environmental and social responsibility to create programs for a better tomorrow.</p>
 		</div>
 		<div class="col-sm-4">
-			<h2>Jessie Mroz</h2>
+			<div class="founder-title">
+				<h2>Jessie Mroz</h2>
+				<h3>Communications & Marketing</h3>
+			</div>
+			<img src="/images/jessie_headshot_350.JPG" class="img-responsive center-block" alt="Jessie Mroz headshot">
+			<br>
 			<p>Jessie is the person responsible for pulling Jeff out of the stone age. She is always willing to dive into a project with little regard for the size or difficulty of the tasks involved if it supports a worthwhile cause. She also brings a moose to SustainApp team meetings.</p>
 		</div>
 		<div class="col-sm-4">
-			<h2>Andy Stocchetti</h2>
+			<div class="founder-title">
+				<h2>Andy Stocchetti</h2>
+				<h3>Technoloy & Development</h3>
+			</div>
+			<img src="/images/andy_headshot_350.JPG" class="img-responsive center-block" alt="Andy Stocchetti headshot">
+			<br>
 			<p>Andy strives to develop technology that enhances sustainable lifestyles. As such, he is in charge of all things tech for SustainApp, where he artfully handles all the crazy ideas constantly thrown at him by his co-founders.</p>
 		</div>
 	</div>

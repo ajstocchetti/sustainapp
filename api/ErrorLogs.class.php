@@ -30,42 +30,23 @@ class errorLoger
 		$line = "";
 		$header = "";
 		
-		$errTypeText = "";
-		switch($errType)
-		{	case 0:
-				$errTypeText = "Other";
-				break;
-			case 1:
-				$errTypeText = "Connection Error";
-				break;
-			case 2:
-				$errTypeText = "Invalid Connection";
-				break;
-			case 3:
-				$errTypeText = "SQL Insert Error";
-				break;
-			case 4:
-				$errTypeText = "SQL Select Error";
-				break;
-			case 5:
-				$errTypeText = "Miscellaneous PDO Error";
-				break;
-			case 500:
-				$errTypeText = "SQL or Input Error";
-				break;
-			case 501:
-				$errTypeText = "Audit Trail Update Error";
-				break;
-			case 600:
-				$errTypeText = "Curl Error";
-				break;
-			case 700:
-				$errTypeText = "Digit-eyes Error";
-				break;
-			default:
-				$errTypeText = "Unknown";
-		}	
-			
+		$errorTypes = [
+			0 => "Other",
+			1 => "Connection Error",
+			2 => "Invalid Connection",
+			3 => "SQL Insert Error",
+			4 => "SQL Select Error",
+			5 => "Miscellaneous PDO Error",
+			500 => "SQL or Input Error",
+			501 => "Audit Trail Update Error",
+			600 => "Curl Error",
+			700 => "Digit-eyes Error",
+		];
+		$errTypeText = "Unknown";
+		if( array_key_exists($errType, $errorTypes)) {
+			$errTypeText = $errorTypes[$errType];
+		}
+
 		
 		$line .= "2".$tab;	// error log version #2
 		$header .= "Error Log Version".$tab;
