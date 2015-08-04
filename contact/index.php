@@ -20,19 +20,13 @@
 				<div id="mc_embed_signup_scroll">
 				<div class="row">
 					<div class="mc-field-group col-xs-12 col-sm-4 col-lg-3">
-						<label for="mce-EMAIL">Email Address<span class="asterisk">*</span></label>
-						<br>
-						<input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
+						<input type="email" value="" name="EMAIL" class="btnStd required email" id="mce-EMAIL" placeholder="Email [required]">
 					</div>
 					<div class="mc-field-group col-xs-12 col-sm-4 col-lg-3">
-						<label for="mce-FNAME">First Name</label>
-						<br>
-						<input type="text" value="" name="FNAME" id="mce-FNAME">
+						<input type="text" value="" name="FNAME" class="btnStd" id="mce-FNAME" placeholder="First Name">
 					</div>
 					<div class="mc-field-group col-xs-12 col-sm-4 col-lg-3">
-						<label for="mce-LNAME">Last Name</label>
-						<br>
-						<input type="text" value="" name="LNAME" id="mce-LNAME">
+						<input type="text" value="" name="LNAME" class="btnStd" id="mce-LNAME" placeholder="Last Name">
 					</div>
 				</div>
 				<div id="mce-responses" class="col-xs-12">
@@ -42,7 +36,7 @@
 				<!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
 				<div style="position: absolute; left: -5000px;"><input type="text" name="b_df200316eed96d1cf0f966cd3_8ce70e5d0e" tabindex="-1" value=""></div>
 				<br>
-				<input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button">
+				<input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="btnStd-full">
 				</div>
 			</form>
 			<script type='text/javascript' src='//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js'></script>
