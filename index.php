@@ -33,9 +33,9 @@
 				<!-- barcode text box -->
 				<input type="search" id="bc_input" class="btnStd">
 				<br>
-				<button type="submit" onclick="searchCompany();" class="btnStd-full">Search Company</button>
+				<button type="submit" onclick="search.company();" class="btnStd-full">Search Company</button>
 				<br>
-				<button type="submit" onclick="searchBarcode();" class="btnStd-full">Search Barcode</button>
+				<button type="submit" onclick="search.barcode();" class="btnStd-full">Search Barcode</button>
 			</center>
 		</div>
 	</div>

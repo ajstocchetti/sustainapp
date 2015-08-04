@@ -42,7 +42,7 @@ JOB.SetLocalizationCallback(function(result) {
 	ctx.lineWIdth = "2";
 	ctx.strokeStyle="red";
 	for(var i = 0; i < result.length; i++) {
-		ctx.rect(result[i].x,result[i].y,result[i].width,result[i].height); 
+		ctx.rect(result[i].x,result[i].y,result[i].width,result[i].height);
 	}
 	ctx.stroke();
 });

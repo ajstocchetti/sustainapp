@@ -11,27 +11,27 @@
  * And the result parameter will contain an array of objects that look like JOB.
  * result = [{Format: the barcode type, Value: the value of the barcode}];
  * __________________________________________________________________________________
- * 
- * You can use either the set functions or just access the properties directly to set callback or 
+ *
+ * You can use either the set functions or just access the properties directly to set callback or
  * other properties. Just always remember to call Init() before starting to decode something never mess
  * around with the SupportedFormats property.
- * 
+ *
  */
 JOB = {
 	Config : {
 		// Set to false if the decoder should look for one barcode and then stop. Increases performance.
 		Multiple : false,
-		
+
 		// The formats that the decoder will look for.
 		DecodeFormats : ["Code128","Code93","Code39","EAN-13", "2Of5", "Inter2Of5", "Codabar"],
-		
+
 		// ForceUnique just must makes sure that the callback function isn't repeatedly called
 		// with the same barcode. Especially in the case of a video stream.
 		ForceUnique: true,
-		
+
 		// Set to true if information about the localization should be recieved from the worker.
 		LocalizationFeedback: false,
-		
+
 		// Set to true if checking orientation of the image should be skipped.
 		// Checking orientation takes a bit of time for larger images, so if
 		// you are sure that the image orientation is 1 you should skip it.
@@ -60,7 +60,7 @@ JOB = {
  		script.type = 'text/javascript';
 		document.getElementsByTagName('head').item(0).appendChild(script);
 	},
-	
+
 	// Value should be true or false.
 	SetRotationSkip : function(value) {
 		JOB.Config.SkipOrientation = value;
@@ -69,12 +69,12 @@ JOB = {
 	SetImageCallback : function(callBack) {
 		JOB.ImageCallback = callBack;
 	},
-	
+
 	// Sets the callback function for the video decoding.
 	SetStreamCallback : function(callBack) {
 		JOB.StreamCallback = callBack;
 	},
-	
+
 	// Sets callback for localization, the callback function should take one argument.
 	// This will be an array with objects with format.
 	// {x, y, width, height}
@@ -84,13 +84,13 @@ JOB = {
 		JOB.LocalizationCallback = callBack;
 		JOB.Config.LocalizationFeedback = true;
 	},
-	
+
 	// Set to true if LocalizationCallback is set and you would like to
-	// receive the feedback or false if 
+	// receive the feedback or false if
 	SwitchLocalizationFeedback : function(bool) {
 		JOB.Config.LocalizationFeedback = bool;
 	},
-	
+
 	// Switches for changing the Multiple property.
 	DecodeSingleBarcode : function() {
 		JOB.Config.Multiple = false;
@@ -98,7 +98,7 @@ JOB = {
 	DecodeMultiple : function() {
 		JOB.Config.Multiple = true;
 	},
-	
+
 	// Sets the formats to decode, formats should be an array of a subset of the supported formats.
 	SetDecodeFormats : function(formats) {
 		JOB.Config.DecodeFormats = [];
@@ -111,7 +111,7 @@ JOB = {
 			JOB.Config.DecodeFormats = JOB.SupportedFormats.slice();
 		}
 	},
-	
+
 	// Removes a list of formats from the formats to decode.
 	SkipFormats : function(formats) {
 		for(var i = 0; i < formats.length; i++) {
@@ -121,7 +121,7 @@ JOB = {
 			}
 		}
 	},
-	
+
 	// Adds a list of formats to the formats to decode.
 	AddFormats : function(formats) {
 		for(var i = 0; i < formats.length; i++) {
@@ -132,7 +132,7 @@ JOB = {
 			}
 		}
 	},
-	
+
 	// The callback function for image decoding used internally by JOB.
 	JOBImageCallback : function(e) {
 		if(e.data.success == "localization") {
@@ -155,7 +155,7 @@ JOB = {
 		JOB.ImageCallback(filteredData);
 		JOB.Decoded = [];
 	},
-	
+
 	// The callback function for stream decoding used internally by JOB.
 	JOBStreamCallback : function(e) {
 		if(e.data.success == "localization") {
@@ -187,13 +187,13 @@ JOB = {
 				cmd : "normal",
 				rotation : 1,
 			});
-		
+
 		}
 		if(!JOB.DecodeStreamActive) {
 			JOB.Decoded = [];
 		}
 	},
-	
+
 	// The image decoding function, image is a data source for an image or an image element.
 	DecodeImage : function(image) {
 		if(image instanceof Image || image instanceof HTMLImageElement)
@@ -243,7 +243,7 @@ JOB = {
 			img.src = image;
 		}
 	},
-	
+
 	// Starts the decoding of a stream, the stream is a video not a blob i.e it's an element.
 	DecodeStream : function(stream) {
 		JOB.Stream = stream;
@@ -260,13 +260,13 @@ JOB = {
 			rotation : 1,
 		});
 	},
-	
+
 	// Stops the decoding of a stream.
 	StopStreamDecode : function() {
 		JOB.DecodeStreamActive = false;
 		JOB.Decoded = [];
 	},
-	
+
 	JOBDecodeImage : function (image,orientation,sceneCaptureType) {
 		if(orientation == 8 || orientation == 6) {
 			if(sceneCaptureType == "Landscape" && image.width > image.height) {
@@ -295,7 +295,7 @@ JOB = {
 			postOrientation : JOB.PostOrientation
 		});
 	},
-	
+
 	DetectVerticalSquash : function (img) {
     	var ih = img.naturalHeight;
     	var canvas = JOB.SquashCanvas;
@@ -324,7 +324,7 @@ JOB = {
     	var ratio = (py / ih);
     	return (ratio===0)?1:ratio;
 	},
-	
+
 	FixCanvas : function (canvas)
 	{
     	var ctx = canvas.getContext('2d');

@@ -215,7 +215,7 @@ function otsu(histogram, total) {
             if ( between > max ) {
                 threshold2 = i;
             }
-            max = between;            
+            max = between;
         }
     }
     return ( threshold1 + threshold2 ) / 2.0;
@@ -294,7 +294,7 @@ function EnlargeTable(h,w){
 	Image.height = Image.table[0].length;
 	CreateImageData();
 }
-			
+
 function ScaleHeight(scale) {
 	var tempArray=[];
 	var avrgRed=0;
@@ -1978,25 +1978,25 @@ ExtendedEncoding = {
 };
 
 CodaBarEncoding = {
-"0000011": "0", 
-"0000110": "1", 
-"0001001": "2", 
-"1100000": "3", 
-"0010010": "4", 
-"1000010": "5", 
-"0100001": "6", 
-"0100100": "7", 
-"0110000": "8", 
-"1001000": "9", 
-"0001100": "-", 
-"0011000": "$", 
-"1000101": ":", 
-"1010001": "/", 
-"1010100": ".", 
-"0011111": "+", 
-"0011010": "A", 
-"0001011": "B", 
-"0101001": "C", 
+"0000011": "0",
+"0000110": "1",
+"0001001": "2",
+"1100000": "3",
+"0010010": "4",
+"1000010": "5",
+"0100001": "6",
+"0100100": "7",
+"0110000": "8",
+"1001000": "9",
+"0001100": "-",
+"0011000": "$",
+"1000101": ":",
+"1010001": "/",
+"1010100": ".",
+"0011111": "+",
+"0011010": "A",
+"0001011": "B",
+"0101001": "C",
 "0001110": "D"
 } ;
 
@@ -2071,7 +2071,7 @@ self.onmessage = function(e) {
 			ScanImage.height = width;
 			break;
 		case 3:
-			ScanImage.data = Rotate(ScanImage.data,ScanImage.width,ScanImage.height,180);	
+			ScanImage.data = Rotate(ScanImage.data,ScanImage.width,ScanImage.height,180);
 	}
 	Image = {
 		data: Scale(ScanImage.data,ScanImage.width,ScanImage.height),
