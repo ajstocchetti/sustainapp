@@ -125,3 +125,10 @@ canvas#bc_img_canvas {
 		min-height: 15px;
 	}
 }
+
+/*	mail chimp
+	http://cdn-images.mailchimp.com/embedcode/classic-081711.css
+*/
+#mc_embed_signup div.response {margin:1em 0; padding:1em .5em .5em 0; font-weight:bold; float:left; top:-1.5em; z-index:1; width:80%;}
+#mc_embed_signup #mce-error-response {display:none;}
+#mc_embed_signup #mce-success-response {color:#529214; display:none;}
