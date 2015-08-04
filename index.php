@@ -9,15 +9,16 @@
 	<div class="row">
 		<a name="scan_start" id="scan_start"></a>
 		<div id="searchresult" class="col-sm-8 column">
+			<span id="user_alerter">Javascript must be enabled to use SustainApp</span>
 			<h4 id="company_name"></h4>
 			<span id="company_score"></span>
 			<span id="product_name"></span>
 			<span id="upc"></span>
-			<p id="query_message">Click 'Scan Barcode' to take a photo, or use the text box to manually enter a company name or the barcode of a product.</p>
+			<span id="score_text"></span>
 		</div>
 		<div id="wrongresults" class="col-sm-4"></div>
 	</div>
-	
+
 	<div class="row">
 		<div class="col-sm-6 searchcol">
 			<center>
@@ -37,16 +38,17 @@
 				<button type="submit" onclick="searchBarcode();" class="btnStd-full">Search Barcode</button>
 			</center>
 		</div>
-	</div> 
+	</div>
 </div><!-- /container -->
+
+<?php
+	include($_SERVER['DOCUMENT_ROOT']."/modules/end_js.html.php");
+?>
 
 <!-- product lookup scripts -->
 <script src="/assets/js/app.js"></script>
 <script src="/assets/js/JOB.js"></script>
 <script src="/assets/js/scanAndDecode.js"></script>
 
-<?php
-	include($_SERVER['DOCUMENT_ROOT']."/modules/end_js.html.php");
-?>
 </body>
 </html>

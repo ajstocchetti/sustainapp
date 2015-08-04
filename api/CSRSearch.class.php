@@ -3,7 +3,7 @@ REQUIRE_ONCE($_SERVER['DOCUMENT_ROOT']."/../jm2_sustainapp_db.php");
 REQUIRE_ONCE($_SERVER['DOCUMENT_ROOT']."/api/ErrorLogs.class.php");
 
 class CSRSearch
-{	
+{
 	/*	(1) initiate object
 		(2) search
 		(3)	getResults
@@ -14,18 +14,18 @@ class CSRSearch
 	private $searchTypeInput;	// set once, NEVER MODIFY
 	private $searchMethod;	// UPC or COMPANY
 	private $processedUPC;	// what we search on, may have been modified by this code
-	private $returnedUPC;	// what is returned from 3rd party UPC lookup 
+	private $returnedUPC;	// what is returned from 3rd party UPC lookup
 	private $companyName;
 	private $companyAlias;
 	private $responseCode;
 	private $responseMessage;
 	private $productDescription;
 	private $score;
-	
+
 	private $dbRead="";
 	private $dbWrite="";
-	
-	
+
+
 	// constructor
 	function CSRSearch($input, $type=NULL)
 	{	$this->userInput = $input;
@@ -62,7 +62,7 @@ class CSRSearch
 		$array["UPC"] = 		$this->returnedUPC;
 		if( empty($array["UPC"]))	{
 			$array["UPC"] = 	$this->processedUPC;
-		}	
+		}
 		$array["DESCRIPTION"] = $this->productDescription;
 		$array["COMPALIAS"] = 	$this->companyAlias;
 		$jsonResp = json_encode($array);
@@ -105,7 +105,7 @@ class CSRSearch
 			return NULL;
 		}
 	}
-	
+
 
 	/*  ***** setDBRead *****
 	description: establishes PDO read connection
@@ -117,9 +117,9 @@ class CSRSearch
 	{	if( !$this->canReadDB())
 			$this->dbRead = $this->getDBCon();
 	}
-	
-	
-	
+
+
+
 	/*  ***** setDBWrite *****
 	description: establishes PDO write connection
 	params: none
@@ -130,9 +130,9 @@ class CSRSearch
 	{	if( !$this->canWriteDB())
 			$this->dbWrite = $this->getDBCon(TRUE);
 	}
-	
-	
-	
+
+
+
 	/*  ***** canReadDB *****
 	description: accessor method for dbRead - determines if dbRead is set
 	params: none
@@ -310,7 +310,7 @@ class CSRSearch
 	description: queries digit-eyes for upc code
 	params:	upcCode - the upc code to search for
 	return: nothing
-	sets:	processedUPC, companyName, companyAlia, productDescription (on success)	
+	sets:	processedUPC, companyName, companyAlia, productDescription (on success)
 	*************** */
 	private function lookupUPCDigiteyes($upcCode)
 	{	// TODO: make sure UPC code is only numbers - but some new UPC codes have letters
@@ -324,7 +324,7 @@ class CSRSearch
 		$app_key = "/3PE8EMB+Iq9"; // K code
 		$authKey = "Sj52B5q7e6Vk9Kg7"; // M code
 		$signature = base64_encode(hash_hmac('sha1', $upcCode, $authKey, true));
-		
+
 		$fullUrl = $baseURL . $DEVersion . "/" . $respType
 			. "/?" .
 			"&upc_code=" . $upcCode .
@@ -369,7 +369,7 @@ class CSRSearch
 					$this->companyName = $JSONObject["gcp"]["company"];
 				if(isset($JSONObject["description"]))
 					$this->productDescription = $JSONObject["description"];
-					
+
 				// Log results to UPC table for faster lookup next time
 				if( !empty($this->companyName))	// got info from digit-eyes
 				{	$this->setDBWrite();
@@ -408,10 +408,10 @@ class CSRSearch
 	*************** */
 	private function updateUPCTable($connection,$upc,$retUPC,$company,$desc=NULL,$source=NULL,$compID=NULL)
 	{	global $upcTable;
-		// replace into will update, insert ignore will not update (the ignore silences the error) 
+		// replace into will update, insert ignore will not update (the ignore silences the error)
 		$query = "REPLACE INTO $upcTable (upccode, properUPC, companyName, description, source, companyID) VALUES (?, ?, ?, ?, ?, ?)";
 		// $query = "INSERT IGNORE INTO $upcTable (upccode, properUPC, companyName, description, source, companyID) VALUES (?, ?, ?, ?, ?, ?)";
-		
+
 		try	{
 			$stmt = $connection->prepare($query);
 			$stmt->bindParam(1, strtoupper($upc), PDO::PARAM_STR);
@@ -434,12 +434,12 @@ class CSRSearch
 
 
 	/*  ***** responseAndMessage *****
-	description: 
+	description:
 	params:	respCode - the response code
 			message [opt] - the message to display for custom response code
 	return: nothing
 	sets:	responseCode, responseMessage
-	
+
 	codes:
 		<0 - always display message on device
 		1-99: didn't try UPC lookup

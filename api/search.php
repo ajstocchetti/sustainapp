@@ -7,7 +7,7 @@
 	$searchMethod = "";
 	if( isset($_REQUEST['searchtype']))
 	{	$searchMethod=strtoupper($_REQUEST['searchtype']);	}
-	
+
 	$searcher = new CSRSearch($upcCode,$searchMethod);
 	$searcher->search();
 	$searcher->getResults();
