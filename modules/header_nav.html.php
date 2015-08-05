@@ -41,14 +41,17 @@
             <li class="navlink navlink-box"><a href="/about">About Us</a></li>
             <li class="navlink navlink-box"><a href="/contact">Contact</a></li>
             <li class="navlink">
-               <a href="https://www.facebook.com/SustainApp" target="_blank"><img src="/images/facebook_header_36.png" alt="Like us on Facebook"></a>
+               <a href="https://www.facebook.com/SustainApp" target="_blank"><img src="/images/social/facebook_header_36.png" alt="Like us on Facebook"></a>
             </li>
             <li class="navlink">
-               <a href="https://www.twitter.com/mysustainapp" target="_blank"><img src="/images/twitter_header_36.png" alt="Follow us on Twitter"></a>
+               <a href="https://www.twitter.com/mysustainapp" target="_blank"><img src="/images/social/twitter_header_36.png" alt="Follow us on Twitter"></a>
             </li>
             <li class="navlink">
-               <a href=//www.pinterest.com/pin/create/button/?url=http%3A%2F%2Fwww.sustainapp.com&media=http%3A%2F%2Fwww.sustainapp.com%2Fimages%2Flogo.png&description=SustainApp!%20Instant%20CSR%20rankings%20for%20over%20thousands%20of%20companies"
-                  target="_blank"><img src="/images/pinterest_header_36.png" alt="Pin Us"></a>
+               <a href="http//www.pinterest.com/pin/create/button/?url=http%3A%2F%2Fwww.sustainapp.com&media=http%3A%2F%2Fwww.sustainapp.com%2Fimages%2Flogo.png&description=SustainApp!%20Instant%20CSR%20rankings%20for%20over%20thousands%20of%20companies"
+                  target="_blank"><img src="/images/social/pinterest_header_36.png" alt="Pin Us"></a>
+            </li>
+            <li class="navlink">
+               <a href="https://www.linkedin.com/company/sustainapp" target="_blank"><img src="/images/social/linked_header_36.png" alt="LinkedIn"></a>
             </li>
          </ul>
       </div><!--/.nav-collapse -->
