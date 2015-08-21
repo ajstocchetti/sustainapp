@@ -67,7 +67,9 @@ class CSRSearch
 			$stmt->bindParam(3, $this->searchMethod, PDO::PARAM_STR);
 			$stmt->bindParam(4, $this->responseCode, PDO::PARAM_STR);
 			$stmt->bindParam(5, $this->responseMessage, PDO::PARAM_STR);
-			$stmt->bindParam(6, $this->companyName, PDO::PARAM_STR);
+			$compForLog = $this->companyName;
+			if(!isset($compForLog)) { $compForLog=""; }
+			$stmt->bindParam(6, $compForLog, PDO::PARAM_STR);
 			$ipClient = isset($_SERVER['HTTP_CLIENT_IP'])		? $_SERVER['HTTP_CLIENT_IP']		: "not set";
 			$ipRemote = isset($_SERVER['REMOTE_ADDR'])			? $_SERVER['REMOTE_ADDR']			: "not set";
 			$ipFwd = isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR']	: "not set";
