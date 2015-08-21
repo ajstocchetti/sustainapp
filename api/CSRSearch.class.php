@@ -54,6 +54,31 @@ class CSRSearch
 			$text .= " and search type: " . $this->searchTypeInput;
 			$this->logError(0, $text, __FILE__, __LINE__);
 		}
+
+		// log results
+		$this->setDBWrite();
+		$connection = $this->dbWrite;
+		global $logTable;
+		$query = "INSERT INTO $logTable (search_string, search_type_input, search_method, response_code, response_message, ip_client, ip_remote_addr, ip_forwarded) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+		try	{
+			$stmt = $connection->prepare($query);
+			$stmt->bindParam(1, $this->userInput, PDO::PARAM_STR);
+			$stmt->bindParam(2, $this->searchTypeInput, PDO::PARAM_STR);
+			$stmt->bindParam(3, $this->searchMethod, PDO::PARAM_STR);
+			$stmt->bindParam(4, $this->responseCode, PDO::PARAM_STR);
+			$stmt->bindParam(5, $this->responseMessage, PDO::PARAM_STR);
+			$ipClient = isset($_SERVER['HTTP_CLIENT_IP'])		? $_SERVER['HTTP_CLIENT_IP']		: "not set";
+			$ipRemote = isset($_SERVER['REMOTE_ADDR'])			? $_SERVER['REMOTE_ADDR']			: "not set";
+			$ipFwd = isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR']	: "not set";
+			$stmt->bindParam(6, $ipClient, PDO::PARAM_STR);
+			$stmt->bindParam(7, $ipRemote, PDO::PARAM_STR);
+			$stmt->bindParam(8, $ipFwd, PDO::PARAM_STR);
+			$stmt->execute();
+		} catch(PDOException $e) {
+			$this->logError(3,$e->getMessage(),__FILE__,__LINE__);
+		}
+		
+		// return a response
 		$array;
 		$array["PROGRESS"] = 	$this->responseCode;
 		$array["MSG"] = 		$this->responseMessage;
