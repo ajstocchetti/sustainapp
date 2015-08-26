@@ -8,7 +8,7 @@ $(function() {
       });
     },
     decode: function(src) {
-      console.log("Okay, so I'm decoding now...")
+      clearResultDisplay();
       $("#user_alerter").html("Processing image...<br>Bacrode processing may take up to a minute depending on the age of your device.");
       var config = {
         inputStream: {
