@@ -8,7 +8,7 @@ $(function() {
       });
     },
     decode: function(src) {
-      clearResultDisplay();
+      search.clearResultDisplay();
       $("#user_alerter").html("Processing image...<br>Bacrode processing may take up to a minute depending on the age of your device.");
       var config = {
         inputStream: {
