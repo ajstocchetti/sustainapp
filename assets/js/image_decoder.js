@@ -32,25 +32,24 @@ $(function() {
         locate: true,
         src: src
       };
-      // config = $.extend({}, state, {src: src});
-      Quagga.decodeSingle(config, function(result) {});
+      Quagga.decodeSingle(config, function(result) {
+        if( result && result.codeResult && result.codeResult.code ) {
+          // was having issues with getting the error from result,
+          // so just checking if the code exists...
+          var code = result.codeResult.code;
+          // var canvas = Quagga.canvas.dom.image;
+          // console.log("canvas: ",canvas.toDataURL());
+          // TODO: check the type of barcode
+          // I think digit-eyes only works for UPCs
+          search.scan(result.codeResult.code);
+        } else {
+          search.clearResultDisplay();
+          $("#user_alerter").html("Unable not find a barcode in the image. Please try again.");
+          // TODO: log failed decode
+        }
+      });
     },
   };
 
   App.init();
-
-  // Quagga.onProcessed(function(result) {
-  //   console.log("Image processed");
-  //   // check out demo for drawing boxes...
-  // });
-
-  Quagga.onDetected(function(result) {
-    var code = result.codeResult.code,
-    canvas = Quagga.canvas.dom.image;
-    console.log("canvas: ",canvas.toDataURL());
-    console.log("I found it! I found it!\n", result.codeResult.code);
-    // TODO: check the type of barcode
-    //        I think digit-eyes only works for UPCs
-    search.scan(result.codeResult.code);
-  });
 });
