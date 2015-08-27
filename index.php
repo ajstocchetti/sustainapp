@@ -48,8 +48,6 @@
 <!-- product lookup scripts -->
 <script src="/assets/js/quagga/quagga.min.js"></script>
 <script src="/assets/js/sustainapp_search.js"></script>
-<script src="/assets/js/image_decoder.js"></script>
-
 
 </body>
 </html>
