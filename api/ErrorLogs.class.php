@@ -21,6 +21,7 @@ class errorLoger
 			(501) Audit Trail Update Error
 			(600) Curl Error
 			(700) Digit-eyes Error
+			(800) Client couldn't decode image
 	*/
 	function logError( $errType, $error, $file, $errLine)
 	{	$today = date("Y_m_d");
@@ -41,6 +42,7 @@ class errorLoger
 			501 => "Audit Trail Update Error",
 			600 => "Curl Error",
 			700 => "Digit-eyes Error",
+			800 => "Could not decode image (client)",
 		];
 		$errTypeText = "Unknown";
 		if( array_key_exists($errType, $errorTypes)) {

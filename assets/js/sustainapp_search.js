@@ -48,6 +48,16 @@ $(function() {
           clearResultDisplay();
           $("#user_alerter").html("Unable not find a barcode in the image. Please try again.");
           // TODO: log failed decode
+          var resultSafe = result || "";
+          var errjson = JSON.stringify(resultSafe);
+          $.ajax({
+          	cache: false,
+          	type: "POST",
+          	url: "/api/decodeFailError.php",
+          	data: { info: errjson },
+          	contentType: "application/json; charset=ytf-8",
+          	
+          });
         }
       });
     },
