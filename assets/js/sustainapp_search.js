@@ -1,3 +1,4 @@
+var x;
 $(function() {
   var qDecoder = {
     init: function() {
@@ -55,15 +56,20 @@ $(function() {
           	type: "POST",
           	url: "/api/decodeFailError.php",
           	data: { info: errjson },
-          	contentType: "application/json; charset=ytf-8",
-          	
+          	contentType: "application/json; charset=ytf-8"
           });
         }
       });
     },
   }; // end qDecoder
+  
 
-  var search = {
+  qDecoder.init();
+  $("#user_alerter").html("Click 'Scan Barcode' to take a photo, or use the text box to manually enter a company name or the barcode of a product.");
+});
+
+
+var search = {
     barcode: function() {
       this.fromText("UPC");
     },
@@ -153,9 +159,4 @@ $(function() {
     var retText = texts[score];
     retText += " CSR rating provided by <a href=\"http://www.betterworldshopper.com/rankings.html\" target=\"_blank\">Better World Shopper</a>.";
     return retText;
-  };
-
-
-  qDecoder.init();
-  $("#user_alerter").html("Click 'Scan Barcode' to take a photo, or use the text box to manually enter a company name or the barcode of a product.");
-});
+};
