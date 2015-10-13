@@ -47,14 +47,44 @@ class CSRSearch
 
 	// TODO: header
 	function getResults()
-	{	// TODO: this
-		if(empty($this->responseCode))
+	{	if(empty($this->responseCode))
 		{	$this->responseAndMessage(0,"An unexpected error occurred");
 			$text = "No response code calculated for search term: " . $this->userInput;
 			$text .= " and search type: " . $this->searchTypeInput;
 			$this->logError(0, $text, __FILE__, __LINE__);
 		}
 
+		$this->logSearch();
+		
+		// return a response
+		$array;
+		$array["PROGRESS"] = 	$this->responseCode;
+		$array["MSG"] = 		$this->responseMessage;
+		$array["RATING"] = 		$this->score;
+		$array["COMPANY"] = 	$this->companyName;
+		$array["UPC"] = 		$this->returnedUPC;
+		if( empty($array["UPC"]))	{
+			$array["UPC"] = 	$this->processedUPC;
+		}
+		$array["DESCRIPTION"] = $this->productDescription;
+		$array["COMPALIAS"] = 	$this->companyAlias;
+		$jsonResp = json_encode($array);
+		// TODO: check for encode error and make a note of it
+		 echo $jsonResp;
+	}
+	
+	
+	
+	function decoderFailure() {
+		$this->setSearchMethod();
+		$this->responseAndMessage(2);
+		$this->logSearch();
+		$this->logError(800,"Barcode image could not be decoded",__FILE__,__LINE__);
+	}
+	
+
+
+	private function logSearch() {
 		// log results
 		$this->setDBWrite();
 		$connection = $this->dbWrite;
@@ -80,22 +110,6 @@ class CSRSearch
 		} catch(PDOException $e) {
 			$this->logError(3,$e->getMessage(),__FILE__,__LINE__);
 		}
-		
-		// return a response
-		$array;
-		$array["PROGRESS"] = 	$this->responseCode;
-		$array["MSG"] = 		$this->responseMessage;
-		$array["RATING"] = 		$this->score;
-		$array["COMPANY"] = 	$this->companyName;
-		$array["UPC"] = 		$this->returnedUPC;
-		if( empty($array["UPC"]))	{
-			$array["UPC"] = 	$this->processedUPC;
-		}
-		$array["DESCRIPTION"] = $this->productDescription;
-		$array["COMPALIAS"] = 	$this->companyAlias;
-		$jsonResp = json_encode($array);
-		// TODO: check for encode error and make a note of it
-		 echo $jsonResp;
 	}
 
 
@@ -167,7 +181,7 @@ class CSRSearch
 	return: true if dbRead is set, false if not
 	sets:	nothing
 	*************** */
-	function canReadDB()
+	private function canReadDB()
 	{	return !(empty($this->dbRead));	}
 
 
@@ -178,7 +192,7 @@ class CSRSearch
 	return: true if dbWrite is set, false if not
 	sets:	nothing
 	*************** */
-	function canWriteDB()
+	private function canWriteDB()
 	{	return !(empty($this->dbWrite));	}
 
 
@@ -197,7 +211,7 @@ class CSRSearch
 	private function setSearchMethod()
 	{	if(!empty($this->userInput))	// sanity check - this will fail if '0' is passed in
 		{	$type=$this->searchTypeInput;
-			if( $type=="UPC")
+			if( $type=="UPC" || $type=="IMAGE")
 			{	$this->searchMethod="UPC";
 				$this->processedUPC = $this->userInput;
 			}
@@ -472,6 +486,7 @@ class CSRSearch
 		<0 - always display message on device
 		1-99: didn't try UPC lookup
 			1 - no input parameters specified
+			2 - image decode failed
 		100-199: failed UPC lookup
 			100 - error looking up UPC from digitEyes/etc (HTTP error)
 			105 - UPC not found in digiteyes/etc database
@@ -489,6 +504,9 @@ class CSRSearch
 	{	switch($respCode)
 		{	case 1:
 				$message = "No data given. Please scan a UPC or enter a company and try again";
+				break;
+			case 2:
+				$message = "Barcode image could not be decoded";
 				break;
 			case 100:
 				//$message = "Unable to access company lookup service at this time.";

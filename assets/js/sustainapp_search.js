@@ -56,7 +56,7 @@ $(function() {
           	type: "POST",
           	url: "/api/decodeFailError.php",
           	data: { info: errjson },
-          	contentType: "application/json; charset=ytf-8"
+          	contentType: "application/json; charset=UTF-8"
           });
         }
       });
@@ -82,7 +82,7 @@ var search = {
     },
     scan: function(scanCode) {
       // assumes scanCode is UPC
-      this.searchDB(scanCode, "UPC");
+      this.searchDB(scanCode, "IMAGE");
     },
 
     // main search function. the above functions
